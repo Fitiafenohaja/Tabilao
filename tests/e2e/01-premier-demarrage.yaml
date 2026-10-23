@@ -1,0 +1,15 @@
+# Maestro — à exécuter en mode avion : `maestro test tests/e2e`
+appId: mg.tabilao.app
+---
+- launchApp:
+    clearState: true
+- assertVisible: "Bienvenue sur Tabilao"
+- tapOn: "Utiliser un modèle"
+- tapOn: "Ventes"
+- tapOn: "Saisie"
+- tapOn: "Produit, obligatoire"
+- inputText: "Savon Nosy"
+- tapOn: "Prix unitaire, obligatoire"
+- inputText: "1500"
+- tapOn: "Enregistrer"
+- assertVisible: "Ligne enregistrée"
