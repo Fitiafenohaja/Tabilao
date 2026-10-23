@@ -42,3 +42,6 @@ yarn-error.*
 
 # coverage
 coverage/
+
+# Configuration locale de Claude Code
+.claude/
