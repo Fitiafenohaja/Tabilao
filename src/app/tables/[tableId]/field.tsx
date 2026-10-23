@@ -10,8 +10,8 @@ import { UNITS } from '@/services/quantity';
 import { deleteField, draftFromField, saveField, type FieldDraft } from '@/services/tables';
 import { Banner, Button, CheckIcon, Chip, FloppyDiskIcon, Screen, Section, Text, TextField, TrashIcon, spacing, useToast } from '@/ui';
 
-// Types proposés à la création ; « Référence » et « Photo » arrivent avec la v1.1.
-const EDITABLE_TYPES: FieldType[] = ['text', 'number', 'money', 'date', 'boolean', 'choice', 'formula'];
+// Types proposés à la création ; « Référence » arrive avec le lien ventes → stock (v1.1).
+const EDITABLE_TYPES: FieldType[] = ['text', 'number', 'money', 'date', 'boolean', 'choice', 'photo', 'formula'];
 
 const EMPTY: FieldDraft = {
   name: '',
@@ -196,13 +196,26 @@ function FieldForm({ tableId, field, others }: { tableId: string; field?: Field;
               </View>
             </View>
           ) : null}
-          <TextField
-            label={t('fieldEditor.defaultValue')}
-            value={draft.defaultValue ?? ''}
-            onChangeText={(defaultValue) => set({ defaultValue })}
-            keyboardType={numeric ? 'numeric' : 'default'}
-            help={draft.type === 'date' ? t('fieldEditor.defaultHelpDate') : undefined}
-          />
+          {draft.type === 'date' ? (
+            <Section title={t('fieldEditor.defaultValue')}>
+              <View style={{ flexDirection: 'row', gap: spacing.sm }}>
+                <Chip label={t('fieldEditor.defaultNone')} selected={!draft.defaultValue} onPress={() => set({ defaultValue: null })} />
+                <Chip
+                  label={t('fieldEditor.defaultToday')}
+                  icon={draft.defaultValue === '@today' ? CheckIcon : undefined}
+                  selected={draft.defaultValue === '@today'}
+                  onPress={() => set({ defaultValue: '@today' })}
+                />
+              </View>
+            </Section>
+          ) : draft.type === 'photo' ? null : (
+            <TextField
+              label={t('fieldEditor.defaultValue')}
+              value={draft.defaultValue ?? ''}
+              onChangeText={(defaultValue) => set({ defaultValue })}
+              keyboardType={numeric ? 'numeric' : 'default'}
+            />
+          )}
         </>
       )}
     </Screen>

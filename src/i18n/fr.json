@@ -68,7 +68,19 @@
     "searchPlaceholder": "Rechercher un tableau",
     "noResult": "Aucun tableau ne correspond",
     "blank": "Tableau vide",
-    "blankHint": "Choisissez vous-même les colonnes"
+    "blankHint": "Choisissez vous-même les colonnes",
+    "nameLabel": "Nom du tableau",
+    "namePlaceholder": "Ex. Ventes boutique, Achats marché…",
+    "nameRequired": "Donnez un nom au tableau.",
+    "categoryLabel": "Ce tableau suit…",
+    "category": {
+      "income": "Des recettes",
+      "expense": "Des dépenses",
+      "stock": "Du stock",
+      "other": "Autre chose"
+    },
+    "categoryHint": "Les recettes et les dépenses comptent dans les totaux du jour sur l’accueil.",
+    "create": "Créer le tableau"
   },
   "entry": {
     "title": "Nouvelle saisie",
@@ -207,7 +219,6 @@
     "type": "Type",
     "required": "Obligatoire",
     "defaultValue": "Valeur par défaut",
-    "defaultHelpDate": "@today = date du jour",
     "choices": "Choix (séparés par des virgules)",
     "formula": "Formule",
     "formulaHelp": "Exemple : {Quantité} * {Prix unitaire}",
@@ -225,7 +236,14 @@
     "unitNone": "Aucune",
     "unitHint": "Laissez « Aucune » si l’unité change selon le produit : ajoutez alors un champ « Unité » (liste de choix).",
     "integerOnly": "Nombres entiers seulement",
-    "integerOnlyHint": "Pour ce qui se vend à la pièce : 1, 2, 3… sans virgule."
+    "integerOnlyHint": "Pour ce qui se vend à la pièce : 1, 2, 3… sans virgule.",
+    "defaultNone": "Aucune",
+    "defaultToday": "Date du jour",
+    "emptyTitle": "Ce tableau n’a pas encore de colonne",
+    "emptyMessage": "Ajoutez les colonnes de votre tableau : par exemple Date, Produit et Montant. Le formulaire de saisie sera créé à partir d’elles.",
+    "quickAdd": "Ajout rapide",
+    "quickAddHint": "Touchez un champ courant pour l’ajouter, ou « Ajouter un champ » pour en créer un sur mesure.",
+    "addFields": "Ajouter des colonnes"
   },
   "export": {
     "title": "Exporter",
@@ -270,7 +288,10 @@
     "details": "Détails",
     "lowStock": "Stock bas",
     "deleteConfirm": "Cette ligne ira à la corbeille (restaurable pendant 30 jours).",
-    "deleted": "Ligne mise à la corbeille"
+    "deleted": "Ligne mise à la corbeille",
+    "editTitle": "Modifier la ligne",
+    "updated": "Ligne modifiée",
+    "photoAttached": "Photo jointe"
   },
   "security": {
     "title": "Verrouillage",
@@ -324,5 +345,25 @@
     "decrease": "Diminuer {{field}}",
     "increase": "Augmenter {{field}}",
     "hint": "Ex. 2, 1,5 ou 1/2"
+  },
+  "dates": {
+    "choose": "Choisir une date",
+    "yesterday": "Hier"
+  },
+  "photo": {
+    "camera": "Prendre une photo",
+    "gallery": "Galerie",
+    "remove": "Retirer la photo",
+    "preview": "Aperçu du justificatif",
+    "denied": "Autorisez l’appareil photo dans les réglages Android pour prendre une photo."
+  },
+  "presets": {
+    "date": "Date",
+    "product": "Produit",
+    "client": "Client",
+    "quantity": "Quantité",
+    "amount": "Montant",
+    "payment": "Paiement",
+    "comment": "Commentaire"
   }
 }

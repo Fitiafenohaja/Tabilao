@@ -68,7 +68,19 @@
     "searchPlaceholder": "Hikaroka tabilao",
     "noResult": "Tsy misy tabilao mifanaraka",
     "blank": "Tabilao foana",
-    "blankHint": "Ianao no misafidy ny tsanganana"
+    "blankHint": "Ianao no misafidy ny tsanganana",
+    "nameLabel": "Anaran'ny tabilao",
+    "namePlaceholder": "Ohatra : Varotra, Fividianana an-tsena…",
+    "nameRequired": "Omeo anarana ny tabilao.",
+    "categoryLabel": "Manaraka inona ity tabilao ity ?",
+    "category": {
+      "income": "Vola miditra",
+      "expense": "Fandaniana",
+      "stock": "Tahiry entana",
+      "other": "Zavatra hafa"
+    },
+    "categoryHint": "Ny vola miditra sy ny fandaniana no isaina amin'ny totalin'ny andro eo amin'ny fandraisana.",
+    "create": "Hamorona ny tabilao"
   },
   "entry": {
     "title": "Fampidirana vaovao",
@@ -207,7 +219,6 @@
     "type": "Karazany",
     "required": "Tsy maintsy fenoina",
     "defaultValue": "Sanda mahazatra",
-    "defaultHelpDate": "@today = daty androany",
     "choices": "Safidy (sarahana faingo)",
     "formula": "Fomba fikajiana",
     "formulaHelp": "Ohatra : {Isa} * {Vidiny}",
@@ -225,7 +236,14 @@
     "unitNone": "Tsy misy",
     "unitHint": "Avelao « Tsy misy » raha miova arakaraka ny entana ny refy : ampio saha « Unité » (lisitra safidy).",
     "integerOnly": "Isa feno ihany",
-    "integerOnlyHint": "Ho an'izay amidy isam-batany : 1, 2, 3… tsy misy faingo."
+    "integerOnlyHint": "Ho an'izay amidy isam-batany : 1, 2, 3… tsy misy faingo.",
+    "defaultNone": "Tsy misy",
+    "defaultToday": "Daty androany",
+    "emptyTitle": "Mbola tsy misy tsanganana ity tabilao ity",
+    "emptyMessage": "Ampio ny tsanganan'ny tabilaonao : ohatra Daty, Vokatra ary Vola. Avy amin'ireo no hamoronana ny taratasy fampidirana.",
+    "quickAdd": "Fanampiana haingana",
+    "quickAddHint": "Tsindrio ny saha iray hanampiana azy, na « Hanampy saha » hamoronana saha manokana.",
+    "addFields": "Hanampy tsanganana"
   },
   "export": {
     "title": "Haondrana",
@@ -270,7 +288,10 @@
     "details": "Antsipiriany",
     "lowStock": "Efa ho lany",
     "deleteConfirm": "Halefa any amin'ny fako ity andalana ity (azo averina ao anatin'ny 30 andro).",
-    "deleted": "Nalefa any amin'ny fako ny andalana"
+    "deleted": "Nalefa any amin'ny fako ny andalana",
+    "editTitle": "Hanova ny andalana",
+    "updated": "Voaova ny andalana",
+    "photoAttached": "Misy sary"
   },
   "security": {
     "title": "Hidy",
@@ -324,5 +345,25 @@
     "decrease": "Hampihena ny {{field}}",
     "increase": "Hampitombo ny {{field}}",
     "hint": "Ohatra : 2, 1,5 na 1/2"
+  },
+  "dates": {
+    "choose": "Hisafidy daty",
+    "yesterday": "Omaly"
+  },
+  "photo": {
+    "camera": "Haka sary",
+    "gallery": "Sary voatahiry",
+    "remove": "Hanala ny sary",
+    "preview": "Topimason'ny porofo",
+    "denied": "Avelao hampiasa ny fakan-tsary ao amin'ny fikirakirana Android."
+  },
+  "presets": {
+    "date": "Daty",
+    "product": "Vokatra",
+    "client": "Mpanjifa",
+    "quantity": "Isa",
+    "amount": "Vola",
+    "payment": "Fandoavana",
+    "comment": "Fanamarihana"
   }
 }

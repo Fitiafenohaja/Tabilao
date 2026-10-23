@@ -68,7 +68,19 @@
     "searchPlaceholder": "Search tables",
     "noResult": "No matching table",
     "blank": "Blank table",
-    "blankHint": "Choose your own columns"
+    "blankHint": "Choose your own columns",
+    "nameLabel": "Table name",
+    "namePlaceholder": "E.g. Shop sales, Market purchases…",
+    "nameRequired": "Give the table a name.",
+    "categoryLabel": "This table tracks…",
+    "category": {
+      "income": "Income",
+      "expense": "Expenses",
+      "stock": "Stock",
+      "other": "Something else"
+    },
+    "categoryHint": "Income and expenses count in today’s totals on the home screen.",
+    "create": "Create table"
   },
   "entry": {
     "title": "New entry",
@@ -207,7 +219,6 @@
     "type": "Type",
     "required": "Required",
     "defaultValue": "Default value",
-    "defaultHelpDate": "@today = today's date",
     "choices": "Choices (comma separated)",
     "formula": "Formula",
     "formulaHelp": "Example: {Quantity} * {Unit price}",
@@ -225,7 +236,14 @@
     "unitNone": "None",
     "unitHint": "Leave “None” if the unit depends on the product: then add a “Unit” choice field.",
     "integerOnly": "Whole numbers only",
-    "integerOnlyHint": "For items sold by the piece: 1, 2, 3… no decimals."
+    "integerOnlyHint": "For items sold by the piece: 1, 2, 3… no decimals.",
+    "defaultNone": "None",
+    "defaultToday": "Today’s date",
+    "emptyTitle": "This table has no columns yet",
+    "emptyMessage": "Add your table’s columns, for example Date, Product and Amount. The entry form is built from them.",
+    "quickAdd": "Quick add",
+    "quickAddHint": "Tap a common field to add it, or “Add a field” to create a custom one.",
+    "addFields": "Add columns"
   },
   "export": {
     "title": "Export",
@@ -270,7 +288,10 @@
     "details": "Details",
     "lowStock": "Low stock",
     "deleteConfirm": "This row goes to the trash (restorable for 30 days).",
-    "deleted": "Row moved to trash"
+    "deleted": "Row moved to trash",
+    "editTitle": "Edit row",
+    "updated": "Row updated",
+    "photoAttached": "Photo attached"
   },
   "security": {
     "title": "Lock",
@@ -324,5 +345,25 @@
     "decrease": "Decrease {{field}}",
     "increase": "Increase {{field}}",
     "hint": "E.g. 2, 1.5 or 1/2"
+  },
+  "dates": {
+    "choose": "Choose a date",
+    "yesterday": "Yesterday"
+  },
+  "photo": {
+    "camera": "Take a photo",
+    "gallery": "Gallery",
+    "remove": "Remove photo",
+    "preview": "Receipt preview",
+    "denied": "Allow the camera in Android settings to take a photo."
+  },
+  "presets": {
+    "date": "Date",
+    "product": "Product",
+    "client": "Customer",
+    "quantity": "Quantity",
+    "amount": "Amount",
+    "payment": "Payment",
+    "comment": "Comment"
   }
 }

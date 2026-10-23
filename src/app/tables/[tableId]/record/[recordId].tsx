@@ -1,7 +1,7 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, Image, StyleSheet, View } from 'react-native';
 
 import { recordsRepo } from '@/data/repositories';
 import { useTable } from '@/features/tables/useTables';
@@ -11,7 +11,21 @@ import { unitFor } from '@/services/fields';
 import { formatAmount } from '@/services/money';
 import { formatQuantity } from '@/services/quantity';
 import { amountFieldOf, titleFieldOf } from '@/services/summary';
-import { Button, CalculatorIcon, Card, CopyIcon, Screen, Section, Text, TrashIcon, iconSize, spacing, useTheme, useToast } from '@/ui';
+import {
+  Button,
+  CalculatorIcon,
+  Card,
+  CopyIcon,
+  PencilSimpleIcon,
+  Screen,
+  Section,
+  Text,
+  TrashIcon,
+  iconSize,
+  spacing,
+  useTheme,
+  useToast,
+} from '@/ui';
 
 // Détail d'un enregistrement : valeurs, dupliquer, supprimer (corbeille 30 jours).
 export default function RecordDetail() {
@@ -54,6 +68,11 @@ export default function RecordDetail() {
       footer={
         <>
           <Button
+            icon={PencilSimpleIcon}
+            label={t('common.edit')}
+            onPress={() => router.push({ pathname: '/tables/[tableId]/entry', params: { tableId, recordId } })}
+          />
+          <Button
             variant="secondary"
             icon={CopyIcon}
             label={t('common.duplicate')}
@@ -79,9 +98,22 @@ export default function RecordDetail() {
         </Text>
       </View>
 
+      {fields
+        .filter((f) => f.type === 'photo' && typeof record.data[f.id] === 'string' && record.data[f.id])
+        .map((f) => (
+          <View key={f.id} style={[styles.photo, { borderColor: colors.border }]}>
+            <Image
+              source={{ uri: record.data[f.id] as string }}
+              style={styles.image}
+              resizeMode="cover"
+              accessibilityLabel={`${f.name} : ${t('photo.preview')}`}
+            />
+          </View>
+        ))}
+
       <Section>
         <Card style={styles.list}>
-          {fields.map((f, i) => (
+          {fields.filter((f) => f.type !== 'photo').map((f, i) => (
             <View
               key={f.id}
               accessible
@@ -111,4 +143,6 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.md, minHeight: 52, paddingVertical: spacing.sm },
   label: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, flexShrink: 1 },
   value: { flexShrink: 1, textAlign: 'right' },
+  photo: { borderRadius: 12, borderWidth: 1, overflow: 'hidden' },
+  image: { width: '100%', aspectRatio: 4 / 3 },
 });

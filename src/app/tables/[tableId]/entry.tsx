@@ -1,22 +1,30 @@
-import { router, useLocalSearchParams } from 'expo-router';
-import { Controller } from 'react-hook-form';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { Controller, type ControllerRenderProps } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
+import { recordsRepo, type RecordItem } from '@/data/repositories';
 import type { Field } from '@/data/schema';
+import { usePhotoPicker } from '@/features/entry/usePhotoPicker';
 import { useEntryForm } from '@/features/entry/useEntryForm';
 import { useTable } from '@/features/tables/useTables';
-import { fieldOptions, fieldValidation, unitFor } from '@/services/fields';
+import { useDbQuery } from '@/features/useDbQuery';
+import { fieldOptions, fieldValidation, unitFor, type RecordData } from '@/services/fields';
 import { formatAmount } from '@/services/money';
+import { discardPhoto } from '@/services/photos';
 import {
   Button,
   CheckIcon,
   Chip,
   ComputedField,
+  DateField,
+  EmptyState,
   FloppyDiskIcon,
+  PhotoField,
   PlusIcon,
   QuantityField,
   Screen,
+  TableIcon,
   Text,
   TextField,
   WarningIcon,
@@ -25,34 +33,42 @@ import {
   useToast,
 } from '@/ui';
 
-// Saisie rapide : parcours en 3 gestes (toucher, remplir, enregistrer).
+// Saisie rapide (parcours en 3 gestes) ; avec `recordId`, modification d'une ligne existante.
 export default function Entry() {
-  const { tableId } = useLocalSearchParams<{ tableId: string }>();
+  const { tableId, recordId } = useLocalSearchParams<{ tableId: string; recordId?: string }>();
   const { fields } = useTable(tableId);
-  if (fields.length === 0) return null;
-  return <EntryForm tableId={tableId} fields={fields} />;
+  const existing = useDbQuery(() => (recordId ? recordsRepo.get(recordId) : undefined), [recordId]);
+  if (recordId && !existing) return null;
+  if (fields.length === 0) return <NoFields tableId={tableId} />;
+  return <EntryForm key={existing?.id ?? 'new'} tableId={tableId} fields={fields} existing={existing} />;
 }
 
-function EntryForm({ tableId, fields }: { tableId: string; fields: Field[] }) {
+function EntryForm({ tableId, fields, existing }: { tableId: string; fields: Field[]; existing?: RecordItem }) {
   const { t } = useTranslation();
   const toast = useToast();
-  const { form, values, computed, save } = useEntryForm(tableId, fields);
+  const { form, values, computed, save } = useEntryForm(tableId, fields, existing);
   const errors = form.formState.errors;
+  const editing = !!existing;
 
   const onSaved = (next: boolean) => () => {
-    toast.show(t('entry.saved'));
+    toast.show(editing ? t('records.updated') : t('entry.saved'));
     if (!next) router.back();
   };
 
   return (
     <Screen
       footer={
-        <>
-          <Button variant="secondary" icon={PlusIcon} label={t('common.saveAndNext')} onPress={save(onSaved(true))} />
+        editing ? (
           <Button icon={FloppyDiskIcon} label={t('common.save')} onPress={save(onSaved(false))} />
-        </>
+        ) : (
+          <>
+            <Button variant="secondary" icon={PlusIcon} label={t('common.saveAndNext')} onPress={save(onSaved(true))} />
+            <Button icon={FloppyDiskIcon} label={t('common.save')} onPress={save(onSaved(false))} />
+          </>
+        )
       }
     >
+      <Stack.Screen options={{ title: editing ? t('records.editTitle') : t('entry.title') }} />
       {fields.map((field) => {
         if (field.type === 'formula') {
           const value = computed.data[field.id];
@@ -65,66 +81,149 @@ function EntryForm({ tableId, fields }: { tableId: string; fields: Field[] }) {
             />
           );
         }
-        const error = errors[field.id]?.message as string | undefined;
         return (
           <Controller
             key={field.id}
             control={form.control}
             name={field.id}
-            render={({ field: input }) =>
-              field.type === 'choice' || field.type === 'boolean' ? (
-                <View style={{ gap: spacing.xs }}>
-                  <Text variant="label" tone="muted">
-                    {field.name}
-                    {field.required ? <Text variant="label" tone="danger"> *</Text> : null}
-                  </Text>
-                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
-                    {(field.type === 'boolean' ? [true, false] : (fieldOptions(field).choices ?? [])).map((value) => {
-                      const label = typeof value === 'boolean' ? t(value ? 'common.yes' : 'common.no') : value;
-                      return (
-                        <Chip
-                          key={label}
-                          label={label}
-                          icon={input.value === value ? CheckIcon : undefined}
-                          selected={input.value === value}
-                          onPress={() => input.onChange(value)}
-                        />
-                      );
-                    })}
-                  </View>
-                  {error ? <FieldError message={error} /> : null}
-                </View>
-              ) : field.type === 'number' ? (
-                <QuantityField
-                  label={field.name}
-                  required={field.required}
-                  value={input.value}
-                  onChange={input.onChange}
-                  onBlur={input.onBlur}
-                  unit={unitFor(field, fields, values)}
-                  integerOnly={fieldValidation(field).decimals === 0}
-                  min={fieldValidation(field).min}
-                  error={error}
-                  help={fieldValidation(field).decimals === 0 ? undefined : t('quantity.hint')}
-                  decreaseLabel={t('quantity.decrease', { field: field.name })}
-                  increaseLabel={t('quantity.increase', { field: field.name })}
-                />
-              ) : (
-                <TextField
-                  label={field.name}
-                  required={field.required}
-                  value={input.value === null || input.value === undefined ? '' : String(input.value)}
-                  onChangeText={input.onChange}
-                  onBlur={input.onBlur}
-                  keyboardType={field.type === 'money' ? 'numeric' : 'default'}
-                  placeholder={field.type === 'date' ? 'AAAA-MM-JJ' : undefined}
-                  error={error}
-                />
-              )
-            }
+            render={({ field: input }) => (
+              <FieldInput
+                field={field}
+                fields={fields}
+                values={values}
+                saved={existing?.data[field.id]}
+                input={input}
+                error={errors[field.id]?.message as string | undefined}
+              />
+            )}
           />
         );
       })}
+    </Screen>
+  );
+}
+
+type InputProps = {
+  field: Field;
+  fields: Field[];
+  values: RecordData;
+  /** Valeur enregistrée (modification d'une ligne). */
+  saved?: RecordData[string];
+  input: ControllerRenderProps<RecordData, string>;
+  error?: string;
+};
+
+/** Le bon contrôle pour chaque type de champ : rien à taper quand on peut l'éviter. */
+function FieldInput({ field, fields, values, saved, input, error }: InputProps) {
+  const { t } = useTranslation();
+  const photos = usePhotoPicker();
+
+  switch (field.type) {
+    case 'choice':
+    case 'boolean':
+      return (
+        <View style={{ gap: spacing.xs }}>
+          <Text variant="label" tone="muted">
+            {field.name}
+            {field.required ? <Text variant="label" tone="danger"> *</Text> : null}
+          </Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+            {(field.type === 'boolean' ? [true, false] : (fieldOptions(field).choices ?? [])).map((value) => {
+              const label = typeof value === 'boolean' ? t(value ? 'common.yes' : 'common.no') : value;
+              return (
+                <Chip
+                  key={label}
+                  label={label}
+                  icon={input.value === value ? CheckIcon : undefined}
+                  selected={input.value === value}
+                  onPress={() => input.onChange(value)}
+                />
+              );
+            })}
+          </View>
+          {error ? <FieldError message={error} /> : null}
+        </View>
+      );
+    case 'number':
+      return (
+        <QuantityField
+          label={field.name}
+          required={field.required}
+          value={input.value}
+          onChange={input.onChange}
+          onBlur={input.onBlur}
+          unit={unitFor(field, fields, values)}
+          integerOnly={fieldValidation(field).decimals === 0}
+          min={fieldValidation(field).min}
+          error={error}
+          help={fieldValidation(field).decimals === 0 ? undefined : t('quantity.hint')}
+          decreaseLabel={t('quantity.decrease', { field: field.name })}
+          increaseLabel={t('quantity.increase', { field: field.name })}
+        />
+      );
+    case 'date':
+      return (
+        <DateField
+          label={field.name}
+          required={field.required}
+          value={input.value}
+          onChange={input.onChange}
+          error={error}
+          labels={{ choose: t('dates.choose'), today: t('filters.today'), yesterday: t('dates.yesterday') }}
+        />
+      );
+    case 'photo': {
+      // Une photo prise pendant cette saisie puis remplacée ou retirée est supprimée du téléphone ;
+      // celle déjà liée à la ligne enregistrée est gardée (la ligne peut revenir de la corbeille).
+      const change = (uri: string | null) => {
+        if (typeof input.value === 'string' && input.value !== saved) discardPhoto(input.value);
+        input.onChange(uri);
+      };
+      const take = async (source: 'camera' | 'gallery') => {
+        const uri = source === 'camera' ? await photos.takePhoto() : await photos.pickPhoto();
+        if (uri) change(uri);
+      };
+      return (
+        <PhotoField
+          label={field.name}
+          required={field.required}
+          value={input.value}
+          busy={photos.busy}
+          error={photos.denied ? t('photo.denied') : error}
+          onCamera={() => void take('camera')}
+          onGallery={() => void take('gallery')}
+          onRemove={() => change(null)}
+          labels={{ camera: t('photo.camera'), gallery: t('photo.gallery'), remove: t('photo.remove'), preview: t('photo.preview') }}
+        />
+      );
+    }
+    default:
+      return (
+        <TextField
+          label={field.name}
+          required={field.required}
+          value={input.value === null || input.value === undefined ? '' : String(input.value)}
+          onChangeText={input.onChange}
+          onBlur={input.onBlur}
+          keyboardType={field.type === 'money' ? 'numeric' : 'default'}
+          error={error}
+        />
+      );
+  }
+}
+
+/** Saisie impossible sans champ : on envoie vers l'éditeur plutôt qu'un écran blanc. */
+function NoFields({ tableId }: { tableId: string }) {
+  const { t } = useTranslation();
+  return (
+    <Screen>
+      <EmptyState
+        icon={TableIcon}
+        title={t('fieldEditor.emptyTitle')}
+        message={t('fieldEditor.emptyMessage')}
+        actionLabel={t('fieldEditor.addFields')}
+        onAction={() => router.replace({ pathname: '/tables/[tableId]/edit', params: { tableId } })}
+      />
     </Screen>
   );
 }

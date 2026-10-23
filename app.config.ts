@@ -16,7 +16,7 @@ const config: ExpoConfig = {
   android: {
     package: 'mg.tabilao.app',
     adaptiveIcon: {
-      backgroundColor: '#FFFFFF',
+      backgroundColor: '#EEF8F2',
       foregroundImage: './assets/android-icon-foreground.png',
       backgroundImage: './assets/android-icon-background.png',
       monochromeImage: './assets/android-icon-monochrome.png',
@@ -33,6 +33,9 @@ const config: ExpoConfig = {
     'expo-font',
     'expo-localization',
     'expo-sharing',
+    // Justificatifs photo : appareil photo seulement, pas de micro (aucune vidéo).
+    ['expo-image-picker', { cameraPermission: 'Tabilao utilise l’appareil photo pour joindre un justificatif.', microphonePermission: false }],
+    '@react-native-community/datetimepicker',
     [
       'expo-splash-screen',
       { image: './assets/splash-icon.png', backgroundColor: '#FFFFFF', imageWidth: 160 },

@@ -6,7 +6,8 @@ import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import { tablesRepo } from '@/data/repositories';
 import type { Field } from '@/data/schema';
 import { useTable } from '@/features/tables/useTables';
-import { moveField } from '@/services/tables';
+import { missingPresets } from '@/services/fieldPresets';
+import { addPresetField, moveField } from '@/services/tables';
 import {
   Badge,
   Button,
@@ -14,11 +15,14 @@ import {
   CaretDownIcon,
   CaretUpIcon,
   Card,
+  Chip,
+  EmptyState,
   IconButton,
   PlusIcon,
   Screen,
   Section,
   Text,
+  TableIcon,
   TextField,
   TrashIcon,
   iconSize,
@@ -35,6 +39,7 @@ export default function EditTable() {
   const toast = useToast();
   const { table, fields } = useTable(tableId);
   const [name, setName] = useState(table?.name ?? '');
+  const presets = missingPresets(fields, (id) => t(`presets.${id}`));
 
   if (!table) return null;
 
@@ -77,6 +82,32 @@ export default function EditTable() {
     >
       <Stack.Screen options={{ title: t('tables.editFields') }} />
       <TextField label={t('fieldEditor.tableName')} value={name} onChangeText={setName} onEndEditing={saveName} />
+      {fields.length === 0 ? (
+        <EmptyState icon={TableIcon} title={t('fieldEditor.emptyTitle')} message={t('fieldEditor.emptyMessage')} />
+      ) : null}
+
+      {presets.length > 0 ? (
+        <Section title={t('fieldEditor.quickAdd')}>
+          <View style={styles.chips}>
+            {presets.map((id) => (
+              <Chip
+                key={id}
+                icon={PlusIcon}
+                label={t(`presets.${id}`)}
+                accessibilityLabel={`${t('fieldEditor.addField')} : ${t(`presets.${id}`)}`}
+                onPress={() => {
+                  addPresetField(tableId, id, t(`presets.${id}`));
+                  toast.show(t('fieldEditor.saved'));
+                }}
+              />
+            ))}
+          </View>
+          <Text variant="caption" tone="muted">
+            {t('fieldEditor.quickAddHint')}
+          </Text>
+        </Section>
+      ) : null}
+
       <Section title={`${t('fieldEditor.fields')} · ${fields.length}`}>
         {fields.map((field, index) => (
           <FieldRow
@@ -137,4 +168,5 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', paddingVertical: spacing.xs, paddingRight: spacing.xs },
   main: { flex: 1, gap: spacing.xs, minHeight: touchTarget, justifyContent: 'center' },
   meta: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
 });

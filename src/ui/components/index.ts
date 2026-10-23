@@ -25,3 +25,5 @@ export { PinPad } from './PinPad';
 export { QuantityField } from './QuantityField';
 export { PasswordField } from './PasswordField';
 export { Sheet } from './Sheet';
+export { DateField } from './DateField';
+export { PhotoField } from './PhotoField';

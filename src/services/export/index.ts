@@ -10,6 +10,8 @@ const NUMERIC = new Set<Field['type']>(['number', 'money', 'formula']);
 function cellValue(field: Field, data: RecordData): string | number | boolean | null {
   const v = data[field.id] ?? null;
   if (field.type === 'boolean' && typeof v === 'boolean') return v ? 'Oui' : 'Non';
+  // L'adresse d'une photo n'a pas de sens hors du téléphone : on exporte seulement son nom.
+  if (field.type === 'photo' && typeof v === 'string') return v.split('/').pop() ?? v;
   return v;
 }
 

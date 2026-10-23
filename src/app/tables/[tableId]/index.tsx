@@ -47,6 +47,7 @@ const display = (
 ): string => {
   if (!field || value === null || value === undefined || value === '') return '—';
   if (field.type === 'number' && typeof value === 'number') return formatQuantity(value, unit);
+  if (field.type === 'photo') return t('records.photoAttached');
   if ((field.type === 'money' || field.type === 'formula') && typeof value === 'number') return formatAmount(Math.round(value));
   if (field.type === 'date' && typeof value === 'string') return formatDate(value);
   if (typeof value === 'boolean') return value ? t('common.yes') : t('common.no');
@@ -118,6 +119,24 @@ export default function TableView() {
     );
   };
 
+  const openEditor = () => router.push({ pathname: '/tables/[tableId]/edit', params: { tableId } });
+
+  // Tableau sans champ (créé vide) : on explique quoi faire au lieu d'afficher une liste vide.
+  if (table && fields.length === 0) {
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.background }}>
+        <Stack.Screen options={{ title: table.name }} />
+        <EmptyState
+          icon={TableIcon}
+          title={t('fieldEditor.emptyTitle')}
+          message={t('fieldEditor.emptyMessage')}
+          actionLabel={t('fieldEditor.addFields')}
+          onAction={openEditor}
+        />
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <Stack.Screen
@@ -129,7 +148,7 @@ export default function TableView() {
               <IconButton
                 icon={PencilSimpleIcon}
                 label={t('tables.editFields')}
-                onPress={() => router.push({ pathname: '/tables/[tableId]/edit', params: { tableId } })}
+                onPress={openEditor}
               />
             </View>
           ),

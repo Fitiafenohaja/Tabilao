@@ -1,8 +1,10 @@
 import { db } from '@/data/db';
 import { fieldsRepo, tablesRepo } from '@/data/repositories';
 import type { DataTable, Field } from '@/data/schema';
-import type { Template } from '@/templates';
+import type { Template, TemplateField } from '@/templates';
 
+import { toIsoDate } from './dates';
+import { FIELD_PRESETS, type FieldPresetId } from './fieldPresets';
 import { FieldDefinitionError, dependentsOf } from './fieldRules';
 import { fieldOptions, fieldValidation, type RecordData } from './fields';
 import { parseAmount } from './money';
@@ -31,10 +33,7 @@ export function createFromTemplate(template: Template, name: string): DataTable 
   });
 }
 
-export const todayIso = (): string => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-};
+export const todayIso = (): string => toIsoDate(new Date());
 
 /** Valeurs initiales du formulaire : valeur par défaut, date du jour (`@today`). */
 export function initialValues(fields: readonly Field[]): RecordData {
@@ -146,4 +145,33 @@ export function moveField(tableId: string, fieldId: string, direction: -1 | 1): 
   if (from < 0 || to < 0 || to >= ids.length) return;
   [ids[from], ids[to]] = [ids[to]!, ids[from]!];
   db.transaction((tx) => fieldsRepo.reorder(ids, tx));
+}
+
+export type TableCategory = 'income' | 'expense' | 'stock' | 'other';
+
+/** Tableau vide nommé par l'utilisateur ; la catégorie le fait compter dans les totaux du jour. */
+export function createBlankTable(name: string, category: TableCategory): DataTable {
+  const trimmed = name.trim();
+  if (!trimmed) throw new FieldDefinitionError('Donnez un nom au tableau');
+  return tablesRepo.create({ name: trimmed, category: category === 'other' ? null : category });
+}
+
+/** Ajoute un champ courant, nommé dans la langue de l'utilisateur. */
+export function addPresetField(tableId: string, id: FieldPresetId, name: string = FIELD_PRESETS[id].name): void {
+  const preset: TemplateField = FIELD_PRESETS[id];
+  db.transaction((tx) => {
+    fieldsRepo.create(
+      tableId,
+      {
+        name: name.trim(),
+        type: preset.type,
+        required: preset.required ?? false,
+        defaultValue: preset.defaultValue ?? null,
+        optionsJson: preset.options ? JSON.stringify(preset.options) : null,
+        validationJson: preset.validation ? JSON.stringify(preset.validation) : null,
+      },
+      tx,
+    );
+    tablesRepo.update(tableId, {}, tx);
+  });
 }
