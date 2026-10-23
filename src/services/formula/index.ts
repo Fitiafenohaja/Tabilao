@@ -3,3 +3,4 @@ export { compile, evaluate, evaluationOrder, findCycle, type EvalContext, type V
 export { collectRefs, parse, MAX_DEPTH, type Node } from './parser';
 export { tokenize, type Token } from './tokenizer';
 export { renameRef } from './rename';
+export { buildSimpleFormula, OPERATOR_SYMBOL, parseSimpleFormula, SIMPLE_OPERATORS, type SimpleFormula, type SimpleOperator } from './simple';

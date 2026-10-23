@@ -22,7 +22,7 @@ import {
 export default function Onboarding() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const go = (href: '/tables/new' | '/import') => {
+  const go = (href: '/tables/new' | '/tables/create' | '/import') => {
     metaRepo.set('onboarding_done', '1');
     router.replace('/');
     router.push(href);
@@ -50,7 +50,7 @@ export default function Onboarding() {
             subtitle={t('onboarding.templateHint')}
             onPress={() => go('/tables/new')}
           />
-          <ListRow icon={TableIcon} title={t('onboarding.createTable')} subtitle={t('onboarding.blankHint')} onPress={() => go('/tables/new')} />
+          <ListRow icon={TableIcon} title={t('onboarding.createTable')} subtitle={t('onboarding.blankHint')} onPress={() => go('/tables/create')} />
           <ListRow icon={FileArrowDownIcon} title={t('onboarding.importFile')} subtitle={t('onboarding.importHint')} onPress={() => go('/import')} />
         </Section>
 

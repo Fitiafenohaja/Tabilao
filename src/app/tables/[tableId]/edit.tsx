@@ -96,7 +96,7 @@ export default function EditTable() {
                 label={t(`presets.${id}`)}
                 accessibilityLabel={`${t('fieldEditor.addField')} : ${t(`presets.${id}`)}`}
                 onPress={() => {
-                  addPresetField(tableId, id, t(`presets.${id}`));
+                  addPresetField(tableId, id, (p) => t(`presets.${p}`));
                   toast.show(t('fieldEditor.saved'));
                 }}
               />
