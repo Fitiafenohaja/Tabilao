@@ -1,4 +1,4 @@
-import { render, screen, userEvent } from '@testing-library/react-native';
+import { screen, userEvent } from '@testing-library/react-native';
 
 import FieldScreen from '@/app/tables/[tableId]/field';
 import type { Field } from '@/data/schema';
@@ -6,6 +6,7 @@ import { initI18n } from '@/i18n';
 import { saveField } from '@/services/tables';
 
 import { makeField } from '../helpers';
+import { renderScreen } from './render';
 
 // Fiche « Nouvelle colonne » d'un tableau qui a déjà Quantité et Prix unitaire.
 const fields: Field[] = [
@@ -34,7 +35,7 @@ beforeEach(() => jest.clearAllMocks());
 describe('fiche d’une colonne', () => {
   it('crée un calcul « Quantité × Prix unitaire » sans rien taper d’autre que le nom', async () => {
     const user = userEvent.setup();
-    await render(<FieldScreen />);
+    await renderScreen(<FieldScreen />);
 
     await user.type(screen.getByLabelText('Nom de la colonne'), 'Montant total');
     await user.press(screen.getByRole('radio', { name: /^Calcul automatique\./ }));
@@ -54,7 +55,7 @@ describe('fiche d’une colonne', () => {
 
   it('garde les réglages rares repliés jusqu’à « Options avancées »', async () => {
     const user = userEvent.setup();
-    await render(<FieldScreen />);
+    await renderScreen(<FieldScreen />);
     await user.type(screen.getByLabelText('Nom de la colonne'), 'Remise');
     await user.press(screen.getByRole('radio', { name: /^Nombre \/ quantité\./ }));
 
@@ -67,14 +68,14 @@ describe('fiche d’une colonne', () => {
   });
 
   it('chaque type est expliqué par un exemple', async () => {
-    await render(<FieldScreen />);
+    await renderScreen(<FieldScreen />);
     expect(screen.getByRole('radio', { name: 'Montant en Ariary. 12 500 Ar — arrondi à l’ariary' })).toBeOnTheScreen();
     expect(screen.getByRole('radio', { name: 'Photo. Ticket, facture, reçu' })).toBeOnTheScreen();
   });
 
   it('« Enregistrer » est inactif tant que la colonne n’a pas de nom', async () => {
     const user = userEvent.setup();
-    await render(<FieldScreen />);
+    await renderScreen(<FieldScreen />);
     await user.press(screen.getByRole('button', { name: 'Enregistrer' }));
     expect(saved).not.toHaveBeenCalled();
   });

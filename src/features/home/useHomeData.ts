@@ -1,36 +1,37 @@
 import { fieldsRepo, recordsRepo, tablesRepo, type TableSummary } from '@/data/repositories';
-import { amountFieldOf, dateFieldOf, isLowStock, sumValues } from '@/services/summary';
-import { todayIso } from '@/services/tables';
+import { amountFieldOf, dateFieldOf, isLowStock } from '@/services/summary';
 
+import { periodRange, type Period } from '../search/filtersStore';
 import { useDbQuery } from '../useDbQuery';
 
-export type TableCardData = TableSummary & { todayTotal: number | null; lowStock: number };
+export type SummaryPeriod = Exclude<Period, 'all'>;
+
+export type TableCardData = TableSummary & { periodTotal: number | null; lowStock: number };
 
 export type HomeData = { tables: TableCardData[]; income: number; expenses: number };
 
-/** Synthèse de l'accueil : totaux du jour par catégorie, stock bas, résumé de chaque tableau. */
-export function useHomeData(): HomeData {
+/** Synthèse de l'accueil sur la période choisie : recettes, dépenses, stock bas, total de chaque tableau. */
+export function useHomeData(period: SummaryPeriod = 'today'): HomeData {
   return useDbQuery(() => {
-    const today = todayIso();
+    const range = periodRange(period);
     let income = 0;
     let expenses = 0;
     const tables = tablesRepo.list().map((table): TableCardData => {
       const fields = fieldsRepo.list(table.id);
-      let todayTotal: number | null = null;
+      let periodTotal: number | null = null;
       if (table.category === 'income' || table.category === 'expense') {
         const amount = amountFieldOf(fields);
         if (amount) {
-          todayTotal = sumValues(
-            recordsRepo.columnValues(table.id, amount.id, { dateFieldId: dateFieldOf(fields)?.id, from: today, to: today }),
-          );
-          if (table.category === 'income') income += todayTotal;
-          else expenses += todayTotal;
+          const [row] = recordsRepo.sumGrouped(table.id, amount.id, null, { dateFieldId: dateFieldOf(fields)?.id, ...range });
+          periodTotal = Math.round(row?.total ?? 0);
+          if (table.category === 'income') income += periodTotal;
+          else expenses += periodTotal;
         }
       }
       const lowStock =
         table.category === 'stock' ? recordsRepo.allData(table.id).filter((d) => isLowStock(fields, d)).length : 0;
-      return { ...table, todayTotal, lowStock };
+      return { ...table, periodTotal, lowStock };
     });
     return { tables, income, expenses };
-  }, []);
+  }, [period]);
 }

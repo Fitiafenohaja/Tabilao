@@ -46,7 +46,7 @@ Sur téléphone, saisir des ventes dans Excel est lent, répétitif et source d'
 
 - **Tableaux personnalisés** : texte, nombre, montant, date, oui/non, liste de choix, champ calculé.
 - **Modèles prêts à l'emploi** : ventes, dépenses, stock, crédits clients (*trosa*).
-- **Saisie assistée** : les produits et clients déjà saisis sont proposés en suggestion, et le choix d'un produit connu reprend son prix et son unité ; « Reprendre la dernière saisie » en un geste ; confirmation avant d'abandonner une saisie en cours.
+- **Saisie assistée** : les produits et clients déjà saisis sont proposés en suggestion, et le choix d'un produit connu reprend son prix et son unité ; « Reprendre la dernière saisie » et « Saisies habituelles » (loyer, transport…) en un geste ; nouvelle catégorie ajoutée sans quitter la saisie ; confirmation avant d'abandonner une saisie en cours.
 - **Saisie rapide** : formulaire généré automatiquement, date du jour préremplie avec calendrier et raccourcis « Aujourd'hui » / « Hier », calcul en direct, « Enregistrer et ajouter un autre ». Toute ligne peut ensuite être **modifiée**.
 - **Justificatifs photo** : appareil photo ou galerie, photo réduite et gardée dans l'application.
 - **Quantités souples** : `1,5`, `1.5`, `1 000`, `1/2` ou `½` sont compris de la même façon en saisie et à l'import ; boutons − / + ; unité fixe (kg) ou choisie ligne par ligne (pièce, kg, litre, kapoaka, sachet…) ; option « nombres entiers seulement » pour ce qui se vend à la pièce.
@@ -54,7 +54,8 @@ Sur téléphone, saisir des ventes dans Excel est lent, répétitif et source d'
 - **Import Excel et CSV** en 10 étapes : choix de la feuille, ligne d'en-tête, association des colonnes, détection des doublons et des valeurs invalides, import en une seule transaction, rapport d'erreurs exportable.
 - **Export** `.xlsx` (avec ligne de totaux) ou `.csv`, partageable par WhatsApp, e-mail ou Drive.
 - **Recherche, filtres et tri** : recherche plein texte (FTS5), période (aujourd'hui, semaine, mois), filtre sur une liste de choix (ex. Paiement = MVola), tri par date, montant ou nom, total du résultat filtré.
-- **Accueil** : recettes, dépenses et solde du jour, alertes de stock bas et de sauvegarde ancienne.
+- **Bilan** : recettes, dépenses et bénéfice du jour, de la semaine ou du mois, alertes de stock bas et de sauvegarde ancienne.
+- **« Où va mon argent ? »** : dépenses de la période par catégorie, du plus gros poste au plus petit, avec montant et pourcentage ; un toucher ouvre le détail.
 - **Sauvegarde et restauration** : fichier `.tabilao` partageable, protégeable par mot de passe (AES-256-GCM), sauvegarde automatique quotidienne (7 versions), restauration vérifiée et transactionnelle.
 - **Verrouillage** optionnel par code de 4 à 6 chiffres ou empreinte digitale, avec reverrouillage automatique.
 - **Corbeille** de 30 jours, consultable et restaurable, et « Annuler » juste après une suppression.

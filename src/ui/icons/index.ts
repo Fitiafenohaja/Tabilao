@@ -12,6 +12,7 @@ export { CaretDownIcon } from 'phosphor-react-native/src/icons/CaretDown';
 export { CaretRightIcon } from 'phosphor-react-native/src/icons/CaretRight';
 export { CaretUpIcon } from 'phosphor-react-native/src/icons/CaretUp';
 export { CheckCircleIcon } from 'phosphor-react-native/src/icons/CheckCircle';
+export { ChartBarHorizontalIcon as ChartBarIcon } from 'phosphor-react-native/src/icons/ChartBarHorizontal';
 export { CheckIcon } from 'phosphor-react-native/src/icons/Check';
 export { ClockCounterClockwiseIcon } from 'phosphor-react-native/src/icons/ClockCounterClockwise';
 export { CopyIcon } from 'phosphor-react-native/src/icons/Copy';

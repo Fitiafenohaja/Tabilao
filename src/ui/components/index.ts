@@ -28,3 +28,5 @@ export { Sheet } from './Sheet';
 export { DateField } from './DateField';
 export { PhotoField } from './PhotoField';
 export { SuggestionChips } from './SuggestionChips';
+export { Segmented } from './Segmented';
+export { ShareBar } from './ShareBar';

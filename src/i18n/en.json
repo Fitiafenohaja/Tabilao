@@ -44,7 +44,10 @@
     "lowStock_other": "{{count}} products low on stock",
     "backupTitle": "No recent external backup",
     "backupMessage": "Copy your data to an SD card or WhatsApp.",
-    "todayTotal": "Today: {{amount}}"
+    "todayTotal": "Today: {{amount}}",
+    "summary": "Summary",
+    "profit": "Profit",
+    "loss": "Loss"
   },
   "onboarding": {
     "title": "Welcome to Tabilao",
@@ -93,7 +96,12 @@
     "keepEditing": "Keep editing",
     "discard": "Discard",
     "clearTitle": "Clear the form",
-    "suggestion": "Suggestion:"
+    "suggestion": "Suggestion:",
+    "frequent": "Usual entries",
+    "addChoice": "Add",
+    "addChoiceTo": "Add a choice to “{{field}}”",
+    "newChoice": "New choice",
+    "newChoiceHint": "It will be offered in every future entry."
   },
   "templates": {
     "sales": "Sales",
@@ -465,5 +473,20 @@
     "all_zero": "No entries yet",
     "all_one": "{{count}} entry in total",
     "all_other": "{{count}} entries in total"
+  },
+  "spending": {
+    "title": "Where does my money go?",
+    "period": "Period",
+    "total": "Expenses for the period",
+    "top": "{{label}}: {{percent}}% of expenses",
+    "topSentence": "Biggest item: {{label}} ({{percent}}%).",
+    "nothing": "No expenses for this period",
+    "nothingMessage": "Your expenses will appear here, grouped by category.",
+    "noTable": "No expenses table yet",
+    "noTableMessage": "Create an “Expenses” table to see where your money goes.",
+    "none": "No category",
+    "others": "Others",
+    "openHint": "Opens the expenses in this category",
+    "footnote": "Tap a category to see the expenses in detail."
   }
 }

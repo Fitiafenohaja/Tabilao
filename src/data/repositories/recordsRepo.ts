@@ -110,6 +110,27 @@ export const recordsRepo = {
   },
 
   /**
+   * Somme d'une colonne montant, regroupée par une autre colonne (ex. dépenses par catégorie),
+   * calculée par SQLite. Sans colonne de regroupement, une seule somme (clé null).
+   */
+  sumGrouped(
+    tableId: string,
+    amountFieldId: string,
+    groupFieldId: string | null,
+    q: RecordQuery = {},
+    ex: Executor = db,
+  ): { key: string | null; total: number }[] {
+    const amount = fieldExpr(amountFieldId);
+    const key = groupFieldId ? fieldExpr(groupFieldId) : sql`NULL`;
+    return ex
+      .select({ key: sql<string | null>`${key}`, total: sql<number>`coalesce(sum(${amount}), 0)` })
+      .from(records)
+      .where(whereFor(tableId, q))
+      .groupBy(key)
+      .all();
+  },
+
+  /**
    * Autocomplétion : valeurs déjà saisies qui contiennent le texte (sans casse), les plus fréquentes d'abord.
    * Texte vide : les valeurs les plus fréquentes.
    */

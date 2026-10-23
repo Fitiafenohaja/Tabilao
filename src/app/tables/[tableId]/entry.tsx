@@ -1,6 +1,7 @@
 import { router, Stack, useLocalSearchParams, useNavigation, usePreventRemove } from 'expo-router';
 import { Controller, type ControllerRenderProps } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 import { Alert, View } from 'react-native';
 
 import { recordsRepo, type RecordItem } from '@/data/repositories';
@@ -12,8 +13,10 @@ import { useTable } from '@/features/tables/useTables';
 import { useDbQuery } from '@/features/useDbQuery';
 import { fieldOptions, fieldValidation, unitFor, type RecordData } from '@/services/fields';
 import { formatAmount } from '@/services/money';
+import { filterFieldOf } from '@/services/sorting';
 import { amountFieldOf, titleFieldOf } from '@/services/summary';
 import { discardPhoto } from '@/services/photos';
+import { addChoice } from '@/services/tables';
 import {
   Button,
   CheckIcon,
@@ -25,6 +28,7 @@ import {
   IconButton,
   ListRow,
   Section,
+  Sheet,
   SuggestionChips,
   EmptyState,
   FloppyDiskIcon,
@@ -54,7 +58,7 @@ export default function Entry() {
 function EntryForm({ tableId, fields, existing }: { tableId: string; fields: Field[]; existing?: RecordItem }) {
   const { t } = useTranslation();
   const toast = useToast();
-  const { form, values, computed, save, last, repeatLast, pickKnownValue } = useEntryForm(tableId, fields, existing);
+  const { form, values, computed, save, last, repeatLast, frequent, applyEntry, pickKnownValue } = useEntryForm(tableId, fields, existing);
   const errors = form.formState.errors;
   const dirty = form.formState.isDirty;
   const editing = !!existing;
@@ -86,16 +90,19 @@ function EntryForm({ tableId, fields, existing }: { tableId: string; fields: Fie
       { text: t('common.clear'), style: 'destructive', onPress: () => form.reset() },
     ]);
 
-  const lastTitle = last ? titleFieldOf(fields) : undefined;
-  const lastAmount = last ? amountFieldOf(fields) : undefined;
-  const lastSummary = last
-    ? [
-        lastTitle ? String(last.data[lastTitle.id] ?? '') : '',
-        lastAmount && typeof last.data[lastAmount.id] === 'number' ? formatAmount(Math.round(last.data[lastAmount.id] as number)) : '',
-      ]
-        .filter(Boolean)
-        .join(' · ')
-    : '';
+  // Résumé lisible d'une ligne : « Savon Nosy · 4 500 Ar », « Loyer · 150 000 Ar ».
+  const titleField = titleFieldOf(fields);
+  const categoryField = filterFieldOf(fields);
+  const amountField = amountFieldOf(fields);
+  const describe = (data: RecordData) =>
+    [
+      titleField && data[titleField.id] ? String(data[titleField.id]) : '',
+      categoryField && categoryField !== titleField && data[categoryField.id] ? String(data[categoryField.id]) : '',
+      amountField && typeof data[amountField.id] === 'number' ? formatAmount(Math.round(data[amountField.id] as number)) : '',
+    ]
+      .filter(Boolean)
+      .join(' · ');
+  const lastSummary = last ? describe(last.data) : '';
 
   return (
     <Screen
@@ -127,6 +134,21 @@ function EntryForm({ tableId, fields, existing }: { tableId: string; fields: Fie
             subtitle={lastSummary || undefined}
             onPress={repeatLast}
           />
+        </Section>
+      ) : null}
+      {frequent.length > 0 && !dirty ? (
+        <Section title={t('entry.frequent')}>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+            {frequent.map((data, i) => (
+              <Chip
+                key={i}
+                icon={ArrowsClockwiseIcon}
+                label={describe(data)}
+                accessibilityLabel={`${t('entry.frequent')} : ${describe(data)}`}
+                onPress={() => applyEntry(data)}
+              />
+            ))}
+          </View>
         </Section>
       ) : null}
       {fields.map((field) => {
@@ -182,12 +204,25 @@ type InputProps = {
 function FieldInput({ tableId, onPickKnown, field, fields, values, saved, input, error }: InputProps) {
   const { t } = useTranslation();
   const photos = usePhotoPicker();
+  const [adding, setAdding] = useState(false);
 
   switch (field.type) {
     case 'choice':
     case 'boolean':
       return (
         <View style={{ gap: spacing.xs }}>
+          {field.type === 'choice' && adding ? (
+            <AddChoiceSheet
+              visible
+              fieldName={field.name}
+              onClose={() => setAdding(false)}
+              onAdd={(value) => {
+                const added = addChoice(field.id, value);
+                if (added) input.onChange(added);
+                setAdding(false);
+              }}
+            />
+          ) : null}
           <Text variant="label" tone="muted">
             {field.name}
             {field.required ? <Text variant="label" tone="danger"> *</Text> : null}
@@ -205,6 +240,14 @@ function FieldInput({ tableId, onPickKnown, field, fields, values, saved, input,
                 />
               );
             })}
+            {field.type === 'choice' ? (
+              <Chip
+                icon={PlusIcon}
+                label={t('entry.addChoice')}
+                accessibilityLabel={t('entry.addChoiceTo', { field: field.name })}
+                onPress={() => setAdding(true)}
+              />
+            ) : null}
           </View>
           {error ? <FieldError message={error} /> : null}
         </View>
@@ -287,6 +330,26 @@ function FieldInput({ tableId, onPickKnown, field, fields, values, saved, input,
         />
       );
   }
+}
+
+/** Nouvelle valeur pour une liste (ex. une catégorie de dépense), ajoutée sans quitter la saisie. */
+function AddChoiceSheet({ visible, fieldName, onClose, onAdd }: { visible: boolean; fieldName: string; onClose: () => void; onAdd: (value: string) => void }) {
+  const { t } = useTranslation();
+  const [value, setValue] = useState('');
+  const submit = () => {
+    if (!value.trim()) return;
+    onAdd(value);
+    setValue('');
+  };
+  return (
+    <Sheet visible={visible} title={t('entry.addChoiceTo', { field: fieldName })} closeLabel={t('common.close')} onClose={onClose}>
+      <TextField label={t('entry.newChoice')} value={value} onChangeText={setValue} onSubmitEditing={submit} autoFocus />
+      <Text variant="caption" tone="muted">
+        {t('entry.newChoiceHint')}
+      </Text>
+      <Button icon={PlusIcon} label={t('entry.addChoice')} disabled={!value.trim()} onPress={submit} />
+    </Sheet>
+  );
 }
 
 /** Texte avec les valeurs déjà saisies proposées en dessous (produits, clients…). */

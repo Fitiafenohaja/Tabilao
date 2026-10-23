@@ -63,7 +63,12 @@ const display = (
 
 // Consultation : recherche, période, tri, total filtré, liste virtualisée (50 000 lignes).
 export default function TableView() {
-  const { tableId } = useLocalSearchParams<{ tableId: string }>();
+  const { tableId, period: initialPeriod, filterField: initialFilterField, filterValue: initialFilterValue } = useLocalSearchParams<{
+    tableId: string;
+    period?: Period;
+    filterField?: string;
+    filterValue?: string;
+  }>();
   const { t } = useTranslation();
   const { colors } = useTheme();
   const toast = useToast();
@@ -79,9 +84,13 @@ export default function TableView() {
   const filterChoices = filterField ? (fieldOptions(filterField).choices ?? []) : [];
   const [sortOpen, setSortOpen] = useState(false);
   const { records, total, sum, query } = useRecords(tableId, { dateFieldId: roles.date?.id, amountFieldId: roles.amount?.id, sort });
-  const resetFilters = filters.reset;
-  // Les filtres sont propres au tableau ouvert.
-  useEffect(resetFilters, [tableId, resetFilters]);
+  const { reset: resetFilters, setPeriod, setEquals } = filters;
+  // Les filtres sont propres au tableau ouvert ; « Où va mon argent ? » peut en imposer à l'ouverture.
+  useEffect(() => {
+    resetFilters();
+    if (initialPeriod && PERIODS.includes(initialPeriod)) setPeriod(initialPeriod);
+    if (initialFilterField && initialFilterValue) setEquals({ fieldId: initialFilterField, value: initialFilterValue });
+  }, [tableId, initialPeriod, initialFilterField, initialFilterValue, resetFilters, setPeriod, setEquals]);
   const filtered = filters.search !== '' || filters.period !== 'all' || filters.equals !== null;
   const sortLabel = (o: SortOption) => t(`sort.${o.kind}`, { field: o.fieldName ?? '' });
   // Champs secondaires affichés sous le titre (hors titre, date et montant).

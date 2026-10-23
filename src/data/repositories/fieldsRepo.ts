@@ -14,6 +14,10 @@ export const fieldsRepo = {
     return ex.select().from(fields).where(eq(fields.tableId, tableId)).orderBy(asc(fields.position)).all();
   },
 
+  get(id: string, ex: Executor = db): Field | undefined {
+    return ex.select().from(fields).where(eq(fields.id, id)).get();
+  },
+
   create(tableId: string, input: FieldInput, ex: Executor = db): Field {
     const existing = this.list(tableId, ex);
     const row = { position: existing.length, ...input, id: newId(), tableId };

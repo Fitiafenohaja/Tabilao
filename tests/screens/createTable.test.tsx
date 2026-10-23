@@ -1,8 +1,10 @@
-import { render, screen, userEvent } from '@testing-library/react-native';
+import { screen, userEvent } from '@testing-library/react-native';
 
 import CreateTable from '@/app/tables/create';
 import { initI18n } from '@/i18n';
 import { createCustomTable } from '@/services/tables';
+
+import { renderScreen } from './render';
 
 // Parcours utilisateur réel sur l'écran « Nouveau tableau », en français, sans base ni navigation.
 jest.mock('expo-router', () => ({
@@ -26,7 +28,7 @@ const checkbox = (name: string) => screen.getByRole('checkbox', { name: new RegE
 describe('créer un tableau sur mesure', () => {
   it('ventes : 3 gestes (nom, Suivant, Créer) donnent un tableau prêt avec son calcul', async () => {
     const user = userEvent.setup();
-    await render(<CreateTable />);
+    await renderScreen(<CreateTable />);
 
     // « Suivant » ne fait rien tant que le tableau n'a pas de nom.
     await user.press(screen.getByRole('button', { name: 'Suivant' }));
@@ -55,7 +57,7 @@ describe('créer un tableau sur mesure', () => {
 
   it('décocher le prix retire aussi le total, qui en dépend', async () => {
     const user = userEvent.setup();
-    await render(<CreateTable />);
+    await renderScreen(<CreateTable />);
     await user.type(screen.getByLabelText('Comment s’appelle votre tableau ?'), 'Ventes');
     await user.press(screen.getByRole('button', { name: 'Suivant' }));
 
@@ -66,7 +68,7 @@ describe('créer un tableau sur mesure', () => {
 
   it('stock : les colonnes proposées changent avec ce que suit le tableau', async () => {
     const user = userEvent.setup();
-    await render(<CreateTable />);
+    await renderScreen(<CreateTable />);
     await user.type(screen.getByLabelText('Comment s’appelle votre tableau ?'), 'Stock boutique');
     await user.press(screen.getByRole('radio', { name: /^Du stock\./ }));
     await user.press(screen.getByRole('button', { name: 'Suivant' }));
@@ -79,7 +81,7 @@ describe('créer un tableau sur mesure', () => {
 
   it('ajoute une colonne personnalisée en 3 gestes (nom, type, Ajouter)', async () => {
     const user = userEvent.setup();
-    await render(<CreateTable />);
+    await renderScreen(<CreateTable />);
     await user.type(screen.getByLabelText('Comment s’appelle votre tableau ?'), 'Ventes');
     await user.press(screen.getByRole('button', { name: 'Suivant' }));
 

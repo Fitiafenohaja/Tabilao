@@ -44,7 +44,10 @@
     "lowStock_other": "{{count}} produits en stock bas",
     "backupTitle": "Aucune sauvegarde externe récente",
     "backupMessage": "Copiez vos données sur carte SD ou WhatsApp.",
-    "todayTotal": "Aujourd'hui : {{amount}}"
+    "todayTotal": "Aujourd'hui : {{amount}}",
+    "summary": "Bilan",
+    "profit": "Bénéfice",
+    "loss": "Perte"
   },
   "onboarding": {
     "title": "Bienvenue sur Tabilao",
@@ -93,7 +96,12 @@
     "keepEditing": "Continuer la saisie",
     "discard": "Abandonner",
     "clearTitle": "Effacer le formulaire",
-    "suggestion": "Suggestion :"
+    "suggestion": "Suggestion :",
+    "frequent": "Saisies habituelles",
+    "addChoice": "Ajouter",
+    "addChoiceTo": "Ajouter un choix à « {{field}} »",
+    "newChoice": "Nouveau choix",
+    "newChoiceHint": "Il sera proposé dans toutes les prochaines saisies."
   },
   "templates": {
     "sales": "Ventes",
@@ -465,5 +473,20 @@
     "all_zero": "Aucune saisie",
     "all_one": "{{count}} saisie au total",
     "all_other": "{{count}} saisies au total"
+  },
+  "spending": {
+    "title": "Où va mon argent ?",
+    "period": "Période",
+    "total": "Dépenses de la période",
+    "top": "{{label}} : {{percent}} % des dépenses",
+    "topSentence": "Le plus gros poste : {{label}} ({{percent}} %).",
+    "nothing": "Aucune dépense sur cette période",
+    "nothingMessage": "Les dépenses saisies apparaîtront ici, regroupées par catégorie.",
+    "noTable": "Pas encore de tableau de dépenses",
+    "noTableMessage": "Créez un tableau « Dépenses » pour voir où part votre argent.",
+    "none": "Sans catégorie",
+    "others": "Autres",
+    "openHint": "Ouvre les dépenses de cette catégorie",
+    "footnote": "Touchez une catégorie pour voir le détail des dépenses."
   }
 }

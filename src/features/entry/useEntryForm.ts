@@ -6,6 +6,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { recordsRepo, type RecordItem } from '@/data/repositories';
 import type { Field } from '@/data/schema';
 import { prefillFromPrevious, repeatValues } from '@/services/entryAssist';
+import { frequentEntries } from '@/services/insights';
 import { computeRow, normalizeNumbers, type RecordData } from '@/services/fields';
 import { initialValues, todayIso } from '@/services/tables';
 import { buildZodSchema } from '@/services/validation/buildZodSchema';
@@ -41,9 +42,18 @@ export function useEntryForm(tableId: string, fields: readonly Field[], existing
   /** Dernière ligne du tableau, pour « Reprendre la dernière saisie » (nouvelle saisie seulement). */
   const last = useDbQuery(() => (existing ? undefined : recordsRepo.last(tableId)), [existing, tableId]);
 
+  /** Saisies habituelles (loyer, transport, produit vendu au même prix…) parmi les 200 dernières. */
+  const frequent = useDbQuery(
+    () => (existing ? [] : frequentEntries(fields, recordsRepo.list(tableId, { limit: 200 }).map((r) => r.data))),
+    [existing, tableId, fields],
+  );
+
+  /** Remplit le formulaire à partir d'une ligne passée, datée d'aujourd'hui. */
+  const applyEntry = (data: RecordData) =>
+    form.reset({ ...defaults, ...repeatValues(fields, data, todayIso()) }, { keepDefaultValues: true });
+
   const repeatLast = () => {
-    if (!last) return;
-    form.reset({ ...defaults, ...repeatValues(fields, last.data, todayIso()) }, { keepDefaultValues: true });
+    if (last) applyEntry(last.data);
   };
 
   /** Valeur connue choisie (ex. un produit déjà vendu) : on reprend son prix et son unité de la dernière fois. */
@@ -55,5 +65,5 @@ export function useEntryForm(tableId: string, fields: readonly Field[], existing
     for (const [id, v] of Object.entries(patch)) form.setValue(id, v, { shouldDirty: true });
   };
 
-  return { form, values, computed, save, last, repeatLast, pickKnownValue };
+  return { form, values, computed, save, last, repeatLast, frequent, applyEntry, pickKnownValue };
 }

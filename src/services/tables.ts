@@ -7,6 +7,7 @@ import { toIsoDate } from './dates';
 import { presetColumn, type FieldPresetId, type NameOf, type TableCategory } from './fieldPresets';
 import { FieldDefinitionError, dependentsOf } from './fieldRules';
 import { fieldOptions, fieldValidation, type RecordData } from './fields';
+import { withChoice } from './insights';
 import { parseAmount } from './money';
 
 export type { TableCategory } from './fieldPresets';
@@ -175,4 +176,13 @@ export function addPresetField(tableId: string, id: FieldPresetId, nameOf?: Name
     createColumns(tx, tableId, [presetColumn(id, nameOf)], fieldsRepo.list(tableId, tx).length);
     tablesRepo.update(tableId, {}, tx);
   });
+}
+
+/** Ajoute un choix à une liste depuis la saisie (ex. une nouvelle catégorie de dépense) ; renvoie la valeur à sélectionner. */
+export function addChoice(fieldId: string, value: string): string {
+  const field = fieldsRepo.get(fieldId);
+  if (!field || field.type !== 'choice') return '';
+  const next = withChoice(fieldOptions(field).choices ?? [], value);
+  if (next.value) fieldsRepo.update(fieldId, { optionsJson: JSON.stringify({ ...fieldOptions(field), choices: next.choices }) });
+  return next.value;
 }

@@ -44,7 +44,10 @@
     "lowStock_other": "Entana {{count}} efa ho lany",
     "backupTitle": "Tsy misy tahiry ivelany vao haingana",
     "backupMessage": "Adikao any amin'ny karatra SD na WhatsApp ny angonao.",
-    "todayTotal": "Androany : {{amount}}"
+    "todayTotal": "Androany : {{amount}}",
+    "summary": "Tatitra",
+    "profit": "Tombony",
+    "loss": "Fatiantoka"
   },
   "onboarding": {
     "title": "Tongasoa eto amin'ny Tabilao",
@@ -93,7 +96,12 @@
     "keepEditing": "Hanohy",
     "discard": "Hajanona",
     "clearTitle": "Hamafa ny taratasy",
-    "suggestion": "Soso-kevitra :"
+    "suggestion": "Soso-kevitra :",
+    "frequent": "Fampidirana mahazatra",
+    "addChoice": "Hanampy",
+    "addChoiceTo": "Hanampy safidy amin'ny « {{field}} »",
+    "newChoice": "Safidy vaovao",
+    "newChoiceHint": "Haroso amin'ny fampidirana manaraka rehetra izy."
   },
   "templates": {
     "sales": "Varotra",
@@ -465,5 +473,20 @@
     "all_zero": "Tsy mbola misy fampidirana",
     "all_one": "Fampidirana {{count}} raha atambatra",
     "all_other": "Fampidirana {{count}} raha atambatra"
+  },
+  "spending": {
+    "title": "Mankaiza ny volako ?",
+    "period": "Fotoana",
+    "total": "Fandaniana tamin'ity fotoana ity",
+    "top": "{{label}} : {{percent}} % amin'ny fandaniana",
+    "topSentence": "Ny lany indrindra : {{label}} ({{percent}} %).",
+    "nothing": "Tsy misy fandaniana tamin'ity fotoana ity",
+    "nothingMessage": "Hiseho eto ny fandaniana nampidirina, voavondrona isaky ny sokajy.",
+    "noTable": "Tsy mbola misy tabilao fandaniana",
+    "noTableMessage": "Mamorona tabilao « Fandaniana » mba hahitana izay andehanan'ny volanao.",
+    "none": "Tsy misy sokajy",
+    "others": "Hafa",
+    "openHint": "Manokatra ny fandaniana amin'ity sokajy ity",
+    "footnote": "Tsindrio ny sokajy iray hahitana ny antsipirian'ny fandaniana."
   }
 }
