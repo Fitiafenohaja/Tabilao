@@ -137,6 +137,28 @@
       "manual": "Natao tanana",
       "auto": "Mandeha ho azy",
       "preRestore": "Talohan'ny famerenana"
+    },
+    "shareNow": "Hitahiry sy hizara",
+    "protected": {
+      "title": "Arovy ny tahiry",
+      "why": "Tsara raha alefa amin'ny WhatsApp, Drive na karatra SD ny rakitra : tsy misy afaka manokatra azy raha tsy manana ny teny miafina.",
+      "password": "Teny miafin'ny tahiry",
+      "rule": "Litera 8 farafahakeliny. Fehezanteny fohy no mora tadidiana.",
+      "confirm": "Hamafiso ny teny miafina",
+      "warningTitle": "Soraty io teny miafina io",
+      "warning": "Raha very izy, tsy ho azo sokafana intsony ity tahiry ity, na dia izahay aza.",
+      "working": "Mihidy ny rakitra…",
+      "protectAndShare": "Arovy dia zarao",
+      "withoutPassword": "Zarao tsy misy teny miafina",
+      "algo": "AES-256 · PBKDF2",
+      "unlockTitle": "Tahiry voaaro",
+      "badge": "Voaaro",
+      "needed": "Voaaro ity tahiry ity : ampidiro ny teny miafiny.",
+      "wrong": "Diso ny teny miafina, na simba ny rakitra. Tsy nisy niova.",
+      "too_short": "Litera 8 farafahakeliny.",
+      "mismatch": "Tsy mitovy ny teny miafina roa.",
+      "show": "Asehoy ny teny miafina",
+      "hide": "Afeno ny teny miafina"
     }
   },
   "settings": {

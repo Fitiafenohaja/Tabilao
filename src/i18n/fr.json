@@ -137,6 +137,28 @@
       "manual": "Manuelle",
       "auto": "Automatique",
       "preRestore": "Avant restauration"
+    },
+    "shareNow": "Sauvegarder et partager",
+    "protected": {
+      "title": "Protéger la sauvegarde",
+      "why": "Conseillé si le fichier part sur WhatsApp, Drive ou une carte SD : sans le mot de passe, personne ne peut l’ouvrir.",
+      "password": "Mot de passe de la sauvegarde",
+      "rule": "8 caractères minimum. Une petite phrase est plus facile à retenir.",
+      "confirm": "Confirmer le mot de passe",
+      "warningTitle": "Notez ce mot de passe",
+      "warning": "S’il est perdu, cette sauvegarde ne pourra jamais être ouverte, même par nous.",
+      "working": "Chiffrement en cours…",
+      "protectAndShare": "Protéger et partager",
+      "withoutPassword": "Partager sans mot de passe",
+      "algo": "AES-256 · PBKDF2",
+      "unlockTitle": "Sauvegarde protégée",
+      "badge": "Protégée",
+      "needed": "Cette sauvegarde est protégée : entrez son mot de passe.",
+      "wrong": "Mot de passe incorrect, ou fichier endommagé. Rien n’a été modifié.",
+      "too_short": "8 caractères minimum.",
+      "mismatch": "Les deux mots de passe ne correspondent pas.",
+      "show": "Afficher le mot de passe",
+      "hide": "Masquer le mot de passe"
     }
   },
   "settings": {

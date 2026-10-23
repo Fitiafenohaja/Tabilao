@@ -1,6 +1,6 @@
 # Tabilao
 
-> **Vos données, simplement.** — *Ny angon-tsonao, tsotra.*
+> **Vos données, simplement.**
 
 Tabilao est une application Android **100 % hors ligne** qui transforme les tableaux Excel des commerçants en **formulaires de saisie rapide**. Ventes, dépenses, stock, crédits clients : on saisit une information une seule fois, l'application calcule et range tout, sans connexion ni compte en ligne.
 
@@ -11,8 +11,6 @@ Tabilao est une application Android **100 % hors ligne** qui transforme les tabl
 ![TypeScript strict](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript)
 ![SQLite](https://img.shields.io/badge/SQLite-hors%20ligne-003B57?logo=sqlite)
 ![Android 8+](https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android)
-
-> **Statut : MVP en développement.** L'application n'est pas encore publiée sur le Play Store.
 
 ---
 
@@ -55,7 +53,7 @@ Sur téléphone, saisir des ventes dans Excel est lent, répétitif et source d'
 - **Export** `.xlsx` (avec ligne de totaux) ou `.csv`, partageable par WhatsApp, e-mail ou Drive.
 - **Recherche et filtres** : recherche plein texte (FTS5), période (aujourd'hui, semaine, mois), tri, total du résultat filtré.
 - **Accueil** : recettes, dépenses et solde du jour, alertes de stock bas et de sauvegarde ancienne.
-- **Sauvegarde et restauration** : fichier `.tabilao` partageable, sauvegarde automatique quotidienne (7 versions), restauration vérifiée et transactionnelle.
+- **Sauvegarde et restauration** : fichier `.tabilao` partageable, protégeable par mot de passe (AES-256-GCM), sauvegarde automatique quotidienne (7 versions), restauration vérifiée et transactionnelle.
 - **Verrouillage** optionnel par code de 4 à 6 chiffres ou empreinte digitale, avec reverrouillage automatique.
 - **Corbeille** de 30 jours et journal local des actions importantes.
 - **Interface accessible** : cibles tactiles de 48 dp, contraste AA vérifié en mode clair et sombre, lecteurs d'écran pris en charge.
@@ -183,7 +181,8 @@ Les couleurs reprennent le drapeau malgache : **vert** pour les actions et les r
 - **Aucune donnée ne quitte le téléphone** sans action explicite de l'utilisateur (partage, export). Pas de télémétrie, pas de suivi des plantages en ligne.
 - **Écritures transactionnelles** : un import, une restauration ou une règle entre tableaux réussit entièrement ou ne change rien.
 - **Verrouillage** : le code n'est jamais stocké en clair (SHA-256 salé), blocage progressif après 5 erreurs.
-- **Limite connue** : le verrou protège l'accès à l'application, pas le fichier de base ni les sauvegardes `.tabilao`. Le chiffrement AES-256 des sauvegardes est prévu.
+- **Sauvegardes protégées** : une sauvegarde partagée peut être chiffrée en AES-256-GCM, avec une clé dérivée du mot de passe par PBKDF2-HMAC-SHA256 (120 000 itérations, sel aléatoire). L'en-tête du fichier est authentifié : un fichier modifié est refusé. Un mot de passe perdu ne peut pas être récupéré.
+- **Limite connue** : la base de données sur le téléphone n'est pas chiffrée. Le verrou protège l'accès à l'application, pas le fichier lui-même.
 
 Pour signaler une faille de sécurité, merci de ne pas ouvrir de ticket public : contactez le mainteneur directement via son profil GitHub.
 
@@ -209,7 +208,7 @@ maestro test tests/e2e
 - [x] Import et export Excel / CSV
 - [x] Sauvegarde, restauration et corbeille
 - [x] Verrouillage par code et empreinte
-- [ ] Chiffrement AES-256 des sauvegardes
+- [x] Sauvegardes protégées par mot de passe (AES-256)
 - [ ] Choix de la devise
 - [ ] Tests d'intégration sur une vraie base SQLite
 - [ ] Relecture des traductions malgaches par des locuteurs natifs
@@ -226,7 +225,7 @@ maestro test tests/e2e
 
 ## Contribuer
 
-Les contributions sont les bienvenues, en particulier :
+Les retours et propositions sont les bienvenus. En proposant une contribution, vous acceptez qu'elle soit intégrée au projet sous les mêmes conditions que le reste du code (voir [Licence](#licence)). Sont particulièrement utiles :
 
 - **les traductions malgaches** (`src/i18n/mg.json`), aujourd'hui à relire ;
 - les retours de commerçants sur l'usage réel ;
@@ -255,7 +254,9 @@ Le fichier [`AGENTS.md`](AGENTS.md) résume ces règles pour les assistants de c
 
 ## Licence
 
-Licence à définir. En attendant, tous droits réservés par l'auteur.
+**© 2026 Fitiafenohaja — tous droits réservés.**
+
+Le code est publié pour être consulté. Sauf accord écrit de l'auteur, il ne peut pas être copié, modifié, redistribué ni utilisé dans un autre produit. Pour toute demande d'utilisation, contactez l'auteur via son profil GitHub.
 
 ---
 

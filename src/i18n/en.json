@@ -137,6 +137,28 @@
       "manual": "Manual",
       "auto": "Automatic",
       "preRestore": "Before restore"
+    },
+    "shareNow": "Back up and share",
+    "protected": {
+      "title": "Protect the backup",
+      "why": "Recommended if the file goes on WhatsApp, Drive or an SD card: without the password, nobody can open it.",
+      "password": "Backup password",
+      "rule": "At least 8 characters. A short sentence is easier to remember.",
+      "confirm": "Confirm password",
+      "warningTitle": "Write this password down",
+      "warning": "If it is lost, this backup can never be opened, not even by us.",
+      "working": "Encrypting…",
+      "protectAndShare": "Protect and share",
+      "withoutPassword": "Share without password",
+      "algo": "AES-256 · PBKDF2",
+      "unlockTitle": "Protected backup",
+      "badge": "Protected",
+      "needed": "This backup is protected: enter its password.",
+      "wrong": "Wrong password, or damaged file. Nothing was changed.",
+      "too_short": "At least 8 characters.",
+      "mismatch": "The two passwords do not match.",
+      "show": "Show password",
+      "hide": "Hide password"
     }
   },
   "settings": {

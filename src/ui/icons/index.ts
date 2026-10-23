@@ -14,6 +14,8 @@ export { CopyIcon } from 'phosphor-react-native/src/icons/Copy';
 export { CurrencyCircleDollarIcon as CurrencyIcon } from 'phosphor-react-native/src/icons/CurrencyCircleDollar';
 export { DatabaseIcon } from 'phosphor-react-native/src/icons/Database';
 export { ExportIcon } from 'phosphor-react-native/src/icons/Export';
+export { EyeIcon } from 'phosphor-react-native/src/icons/Eye';
+export { EyeSlashIcon } from 'phosphor-react-native/src/icons/EyeSlash';
 export { FileArrowDownIcon } from 'phosphor-react-native/src/icons/FileArrowDown';
 export { FingerprintIcon } from 'phosphor-react-native/src/icons/Fingerprint';
 export { FloppyDiskIcon } from 'phosphor-react-native/src/icons/FloppyDisk';

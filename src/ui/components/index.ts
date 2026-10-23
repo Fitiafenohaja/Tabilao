@@ -23,3 +23,5 @@ export { TricolorBand } from './TricolorBand';
 export { PinDots } from './PinDots';
 export { PinPad } from './PinPad';
 export { QuantityField } from './QuantityField';
+export { PasswordField } from './PasswordField';
+export { Sheet } from './Sheet';
