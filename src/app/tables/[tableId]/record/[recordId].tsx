@@ -57,7 +57,7 @@ export default function RecordDetail() {
         style: 'destructive',
         onPress: () => {
           recordsRepo.softDelete([recordId]);
-          toast.show(t('records.deleted'));
+          toast.show(t('records.deleted'), 'success', { label: t('common.undo'), onPress: () => recordsRepo.restore([recordId]) });
           router.back();
         },
       },

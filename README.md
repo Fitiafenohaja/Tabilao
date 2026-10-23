@@ -46,17 +46,18 @@ Sur téléphone, saisir des ventes dans Excel est lent, répétitif et source d'
 
 - **Tableaux personnalisés** : texte, nombre, montant, date, oui/non, liste de choix, champ calculé.
 - **Modèles prêts à l'emploi** : ventes, dépenses, stock, crédits clients (*trosa*).
+- **Saisie assistée** : les produits et clients déjà saisis sont proposés en suggestion, et le choix d'un produit connu reprend son prix et son unité ; « Reprendre la dernière saisie » en un geste ; confirmation avant d'abandonner une saisie en cours.
 - **Saisie rapide** : formulaire généré automatiquement, date du jour préremplie avec calendrier et raccourcis « Aujourd'hui » / « Hier », calcul en direct, « Enregistrer et ajouter un autre ». Toute ligne peut ensuite être **modifiée**.
 - **Justificatifs photo** : appareil photo ou galerie, photo réduite et gardée dans l'application.
 - **Quantités souples** : `1,5`, `1.5`, `1 000`, `1/2` ou `½` sont compris de la même façon en saisie et à l'import ; boutons − / + ; unité fixe (kg) ou choisie ligne par ligne (pièce, kg, litre, kapoaka, sachet…) ; option « nombres entiers seulement » pour ce qui se vend à la pièce.
 - **Formules simples et sûres** : `{Quantité} * {Prix unitaire}`, `SOMME`, `MOYENNE`, `MIN`, `MAX`, `SI(…; …; …)`, pourcentages. Un interpréteur maison, sans `eval`, refuse les références circulaires. Tout calcul qui dépend d'un montant est arrondi à l'ariary.
 - **Import Excel et CSV** en 10 étapes : choix de la feuille, ligne d'en-tête, association des colonnes, détection des doublons et des valeurs invalides, import en une seule transaction, rapport d'erreurs exportable.
 - **Export** `.xlsx` (avec ligne de totaux) ou `.csv`, partageable par WhatsApp, e-mail ou Drive.
-- **Recherche et filtres** : recherche plein texte (FTS5), période (aujourd'hui, semaine, mois), tri, total du résultat filtré.
+- **Recherche, filtres et tri** : recherche plein texte (FTS5), période (aujourd'hui, semaine, mois), filtre sur une liste de choix (ex. Paiement = MVola), tri par date, montant ou nom, total du résultat filtré.
 - **Accueil** : recettes, dépenses et solde du jour, alertes de stock bas et de sauvegarde ancienne.
 - **Sauvegarde et restauration** : fichier `.tabilao` partageable, protégeable par mot de passe (AES-256-GCM), sauvegarde automatique quotidienne (7 versions), restauration vérifiée et transactionnelle.
 - **Verrouillage** optionnel par code de 4 à 6 chiffres ou empreinte digitale, avec reverrouillage automatique.
-- **Corbeille** de 30 jours et journal local des actions importantes.
+- **Corbeille** de 30 jours, consultable et restaurable, et « Annuler » juste après une suppression.
 - **Interface accessible** : cibles tactiles de 48 dp, contraste AA vérifié en mode clair et sombre, lecteurs d'écran pris en charge.
 
 ## Démarrage rapide
@@ -169,7 +170,7 @@ docs/                    Cahier des charges et document d'architecture
 ### Modèle de données
 
 - `records.data_json` stocke `{ idDuChamp: valeur }`. Ajouter, renommer ou réordonner un champ ne demande **aucune migration**.
-- **Montants en entiers** (ariary). Jamais de nombres à virgule pour l'argent.
+- **Montants en entiers, en ariary uniquement** : Tabilao est conçu pour Madagascar. Jamais de nombres à virgule pour l'argent.
 - Dates au format ISO 8601, identifiants UUID v4, suppression logique (`deleted_at`).
 - Le type de champ « Référence » et la table `rules` préparent le lien ventes → stock.
 
@@ -203,14 +204,16 @@ maestro test tests/e2e
 ## Feuille de route
 
 **MVP**
-- [x] Tableaux, champs personnalisés et modèles
-- [x] Saisie rapide et champs calculés
-- [x] Recherche, filtres et totaux
+- [x] Tableaux, colonnes personnalisées et modèles
+- [x] Création guidée d'un tableau sur mesure et calcul automatique par boutons
+- [x] Saisie rapide, suggestions, prix repris, dernière saisie, modification d'une ligne
+- [x] Calendrier, quantités souples, justificatifs photo
+- [x] Recherche, filtres, tri et totaux
 - [x] Import et export Excel / CSV
-- [x] Sauvegarde, restauration et corbeille
+- [x] Sauvegarde, restauration, corbeille et annulation
 - [x] Verrouillage par code et empreinte
 - [x] Sauvegardes protégées par mot de passe (AES-256)
-- [ ] Choix de la devise
+- [ ] Photos incluses dans les sauvegardes (archive compressée)
 - [ ] Tests d'intégration sur une vraie base SQLite
 - [ ] Relecture des traductions malgaches par des locuteurs natifs
 

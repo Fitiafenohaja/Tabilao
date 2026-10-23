@@ -1,7 +1,7 @@
 import { FlashList } from '@shopify/flash-list';
 import type { TFunction } from 'i18next';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, View } from 'react-native';
 
@@ -13,24 +13,30 @@ import { useTable } from '@/features/tables/useTables';
 import { formatDate } from '@/i18n/format';
 import { exportTable } from '@/services/export/share';
 import type { Value } from '@/services/formula';
-import { isUnitField, unitFor } from '@/services/fields';
+import { fieldOptions, isUnitField, unitFor } from '@/services/fields';
 import { formatAmount } from '@/services/money';
 import { formatQuantity } from '@/services/quantity';
+import { filterFieldOf, sortOptions, type SortOption } from '@/services/sorting';
 import { amountFieldOf, dateFieldOf, isLowStock, titleFieldOf } from '@/services/summary';
 import {
   Badge,
   Card,
+  CheckIcon,
   Chip,
   EmptyState,
   ExportIcon,
   Fab,
   IconButton,
+  ListRow,
   PencilSimpleIcon,
   SearchField,
+  Section,
+  Sheet,
   SortAscendingIcon,
   SortDescendingIcon,
   TableIcon,
   Text,
+  iconSize,
   spacing,
   tabBarHeight,
   useTheme,
@@ -65,12 +71,18 @@ export default function TableView() {
     () => ({ title: titleFieldOf(fields), date: dateFieldOf(fields), amount: amountFieldOf(fields) }),
     [fields],
   );
-  const { records, total, sum, query } = useRecords(tableId, roles.date?.id, roles.amount?.id);
   const filters = useFilters();
+  const sorts = useMemo(() => sortOptions(fields), [fields]);
+  const sort = sorts.find((o) => o.key === filters.sortKey) ?? sorts[0]!;
+  const filterField = useMemo(() => filterFieldOf(fields), [fields]);
+  const filterChoices = filterField ? (fieldOptions(filterField).choices ?? []) : [];
+  const [sortOpen, setSortOpen] = useState(false);
+  const { records, total, sum, query } = useRecords(tableId, { dateFieldId: roles.date?.id, amountFieldId: roles.amount?.id, sort });
   const resetFilters = filters.reset;
   // Les filtres sont propres au tableau ouvert.
   useEffect(resetFilters, [tableId, resetFilters]);
-  const filtered = filters.search !== '' || filters.period !== 'all';
+  const filtered = filters.search !== '' || filters.period !== 'all' || filters.equals !== null;
+  const sortLabel = (o: SortOption) => t(`sort.${o.kind}`, { field: o.fieldName ?? '' });
   // Champs secondaires affichés sous le titre (hors titre, date et montant).
   const secondary = fields
     .filter((f) => f !== roles.title && f !== roles.date && f !== roles.amount)
@@ -168,6 +180,25 @@ export default function TableView() {
                 <Chip key={p} label={t(`filters.${p}`)} selected={filters.period === p} onPress={() => filters.setPeriod(p)} />
               ))}
             </View>
+            {filterField && filterChoices.length ? (
+              <View style={{ gap: spacing.xs }}>
+                <Text variant="caption" tone="muted">
+                  {filterField.name}
+                </Text>
+                <View style={styles.chips}>
+                  <Chip label={t('filters.all')} selected={filters.equals === null} onPress={() => filters.setEquals(null)} />
+                  {filterChoices.map((c) => (
+                    <Chip
+                      key={c}
+                      label={c}
+                      accessibilityLabel={`${filterField.name} : ${c}`}
+                      selected={filters.equals?.value === c}
+                      onPress={() => filters.setEquals({ fieldId: filterField.id, value: c })}
+                    />
+                  ))}
+                </View>
+              </View>
+            ) : null}
             <View style={[styles.summary, { borderColor: colors.border }]}>
               <View style={{ flex: 1 }}>
                 <Text variant="caption" tone="muted">
@@ -179,10 +210,11 @@ export default function TableView() {
                   </Text>
                 ) : null}
               </View>
-              <IconButton
-                icon={filters.sortDirection === 'desc' ? SortDescendingIcon : SortAscendingIcon}
-                label={filters.sortDirection === 'desc' ? t('records.sortNewest') : t('records.sortOldest')}
-                onPress={filters.toggleSort}
+              <Chip
+                icon={sort.direction === 'desc' ? SortDescendingIcon : SortAscendingIcon}
+                label={sortLabel(sort)}
+                accessibilityLabel={`${t('sort.title')} : ${sortLabel(sort)}`}
+                onPress={() => setSortOpen(true)}
               />
             </View>
           </View>
@@ -198,6 +230,24 @@ export default function TableView() {
         }
       />
       <Fab label={t('nav.entry')} onPress={() => router.push({ pathname: '/tables/[tableId]/entry', params: { tableId } })} />
+      <Sheet visible={sortOpen} title={t('sort.title')} closeLabel={t('common.close')} onClose={() => setSortOpen(false)}>
+        <Section flush>
+          {sorts.map((o) => (
+            <ListRow
+              key={o.key}
+              icon={o.direction === 'desc' ? SortDescendingIcon : SortAscendingIcon}
+              iconBg={o.key === sort.key ? 'primarySoft' : undefined}
+              iconFg={o.key === sort.key ? 'onPrimarySoft' : undefined}
+              title={sortLabel(o)}
+              trailing={o.key === sort.key ? <CheckIcon size={iconSize.md} color={colors.primary} weight="bold" /> : <View />}
+              onPress={() => {
+                filters.setSortKey(o.key);
+                setSortOpen(false);
+              }}
+            />
+          ))}
+        </Section>
+      </Sheet>
     </View>
   );
 }

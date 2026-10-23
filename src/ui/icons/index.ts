@@ -1,6 +1,8 @@
 // Icônes Phosphor importées une à une : seules celles-ci sont embarquées dans l'APK.
 export { ArrowDownIcon } from 'phosphor-react-native/src/icons/ArrowDown';
+export { ArrowsClockwiseIcon } from 'phosphor-react-native/src/icons/ArrowsClockwise';
 export { ArrowUpIcon } from 'phosphor-react-native/src/icons/ArrowUp';
+export { ArrowUUpLeftIcon } from 'phosphor-react-native/src/icons/ArrowUUpLeft';
 export { BackspaceIcon } from 'phosphor-react-native/src/icons/Backspace';
 export { BookOpenTextIcon } from 'phosphor-react-native/src/icons/BookOpenText';
 export { CalculatorIcon } from 'phosphor-react-native/src/icons/Calculator';
@@ -15,12 +17,14 @@ export { ClockCounterClockwiseIcon } from 'phosphor-react-native/src/icons/Clock
 export { CopyIcon } from 'phosphor-react-native/src/icons/Copy';
 export { CurrencyCircleDollarIcon as CurrencyIcon } from 'phosphor-react-native/src/icons/CurrencyCircleDollar';
 export { DatabaseIcon } from 'phosphor-react-native/src/icons/Database';
+export { EraserIcon } from 'phosphor-react-native/src/icons/Eraser';
 export { ExportIcon } from 'phosphor-react-native/src/icons/Export';
 export { EyeIcon } from 'phosphor-react-native/src/icons/Eye';
 export { EyeSlashIcon } from 'phosphor-react-native/src/icons/EyeSlash';
 export { FileArrowDownIcon } from 'phosphor-react-native/src/icons/FileArrowDown';
 export { FingerprintIcon } from 'phosphor-react-native/src/icons/Fingerprint';
 export { FloppyDiskIcon } from 'phosphor-react-native/src/icons/FloppyDisk';
+export { FunnelSimpleIcon } from 'phosphor-react-native/src/icons/FunnelSimple';
 export { GearSixIcon } from 'phosphor-react-native/src/icons/GearSix';
 export { HouseIcon } from 'phosphor-react-native/src/icons/House';
 export { ImagesIcon } from 'phosphor-react-native/src/icons/Images';

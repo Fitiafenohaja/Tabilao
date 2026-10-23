@@ -5,9 +5,12 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import { recordsRepo, type RecordItem } from '@/data/repositories';
 import type { Field } from '@/data/schema';
+import { prefillFromPrevious, repeatValues } from '@/services/entryAssist';
 import { computeRow, normalizeNumbers, type RecordData } from '@/services/fields';
-import { initialValues } from '@/services/tables';
+import { initialValues, todayIso } from '@/services/tables';
 import { buildZodSchema } from '@/services/validation/buildZodSchema';
+
+import { useDbQuery } from '../useDbQuery';
 
 /**
  * Formulaire de saisie : validation Zod générée, calcul en direct, enregistrement transactionnel.
@@ -35,5 +38,22 @@ export function useEntryForm(tableId: string, fields: readonly Field[], existing
       onSaved?.();
     })();
 
-  return { form, values, computed, save };
+  /** Dernière ligne du tableau, pour « Reprendre la dernière saisie » (nouvelle saisie seulement). */
+  const last = useDbQuery(() => (existing ? undefined : recordsRepo.last(tableId)), [existing, tableId]);
+
+  const repeatLast = () => {
+    if (!last) return;
+    form.reset({ ...defaults, ...repeatValues(fields, last.data, todayIso()) }, { keepDefaultValues: true });
+  };
+
+  /** Valeur connue choisie (ex. un produit déjà vendu) : on reprend son prix et son unité de la dernière fois. */
+  const pickKnownValue = (fieldId: string, value: string) => {
+    form.setValue(fieldId, value, { shouldDirty: true });
+    const previous = recordsRepo.lastWhere(tableId, fieldId, value);
+    if (!previous) return;
+    const patch = prefillFromPrevious(fields, previous.data, form.getValues(), fieldId);
+    for (const [id, v] of Object.entries(patch)) form.setValue(id, v, { shouldDirty: true });
+  };
+
+  return { form, values, computed, save, last, repeatLast, pickKnownValue };
 }

@@ -25,7 +25,8 @@
     "moveDown": "Hampidinina",
     "clear": "Fafana",
     "seeAll": "Jereo daholo",
-    "soon": "Ho avy tsy ho ela"
+    "soon": "Ho avy tsy ho ela",
+    "undo": "Foanana"
   },
   "home": {
     "today": "Androany",
@@ -85,7 +86,14 @@
   "entry": {
     "title": "Fampidirana vaovao",
     "saved": "Voatahiry ny andalana",
-    "resetConfirm": "Hofafana ve ny zavatra nampidirina?"
+    "resetConfirm": "Hofafana ve ny zavatra nampidirina?",
+    "repeatLast": "Haverina ny fampidirana farany",
+    "discardTitle": "Hajanona ny fampidirana ?",
+    "discardMessage": "Tsy ho voatahiry izay nosoratanao.",
+    "keepEditing": "Hanohy",
+    "discard": "Hajanona",
+    "clearTitle": "Hamafa ny taratasy",
+    "suggestion": "Soso-kevitra :"
   },
   "templates": {
     "sales": "Varotra",
@@ -294,8 +302,6 @@
     "emptyTitle": "Tsy misy andalana",
     "emptyMessage": "Tsindrio « Hampiditra » hanampiana ny voalohany.",
     "noMatch": "Tsy misy andalana mifanaraka amin'ny sivana",
-    "sortNewest": "Ny vaovao indrindra aloha",
-    "sortOldest": "Ny taloha indrindra aloha",
     "createdAt": "Noforonina ny {{date}}",
     "details": "Antsipiriany",
     "lowStock": "Efa ho lany",
@@ -419,5 +425,25 @@
     "submit_one": "Hamorona ny tabilao · tsanganana {{count}}",
     "submit_other": "Hamorona ny tabilao · tsanganana {{count}}",
     "done": "Voaforona ny tabilao : afaka mampiditra ianao"
+  },
+  "trash": {
+    "title": "Fako",
+    "explain": "Mijanona eto mandritra ny {{days}} andro ny andalana voafafa, avy eo fafana tanteraka.",
+    "empty": "Foana ny fako",
+    "when_one": "Voafafa ny {{date}} · ho fafana afaka {{count}} andro",
+    "when_other": "Voafafa ny {{date}} · ho fafana afaka {{count}} andro",
+    "restore": "Haverina",
+    "restored": "Naverina ny andalana",
+    "count_one": "Andalana {{count}} voafafa",
+    "count_other": "Andalana {{count}} voafafa"
+  },
+  "sort": {
+    "title": "Handahatra",
+    "newest": "Ny vaovao indrindra aloha",
+    "oldest": "Ny taloha indrindra aloha",
+    "largest": "{{field}} : ny lehibe indrindra aloha",
+    "smallest": "{{field}} : ny kely indrindra aloha",
+    "az": "{{field}} : A → Z",
+    "za": "{{field}} : Z → A"
   }
 }

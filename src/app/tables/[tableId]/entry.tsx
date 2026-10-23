@@ -1,23 +1,31 @@
-import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { router, Stack, useLocalSearchParams, useNavigation, usePreventRemove } from 'expo-router';
 import { Controller, type ControllerRenderProps } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 
 import { recordsRepo, type RecordItem } from '@/data/repositories';
 import type { Field } from '@/data/schema';
 import { usePhotoPicker } from '@/features/entry/usePhotoPicker';
 import { useEntryForm } from '@/features/entry/useEntryForm';
+import { useSuggestions } from '@/features/entry/useSuggestions';
 import { useTable } from '@/features/tables/useTables';
 import { useDbQuery } from '@/features/useDbQuery';
 import { fieldOptions, fieldValidation, unitFor, type RecordData } from '@/services/fields';
 import { formatAmount } from '@/services/money';
+import { amountFieldOf, titleFieldOf } from '@/services/summary';
 import { discardPhoto } from '@/services/photos';
 import {
   Button,
   CheckIcon,
   Chip,
+  ArrowsClockwiseIcon,
   ComputedField,
   DateField,
+  EraserIcon,
+  IconButton,
+  ListRow,
+  Section,
+  SuggestionChips,
   EmptyState,
   FloppyDiskIcon,
   PhotoField,
@@ -46,29 +54,81 @@ export default function Entry() {
 function EntryForm({ tableId, fields, existing }: { tableId: string; fields: Field[]; existing?: RecordItem }) {
   const { t } = useTranslation();
   const toast = useToast();
-  const { form, values, computed, save } = useEntryForm(tableId, fields, existing);
+  const { form, values, computed, save, last, repeatLast, pickKnownValue } = useEntryForm(tableId, fields, existing);
   const errors = form.formState.errors;
+  const dirty = form.formState.isDirty;
   const editing = !!existing;
+  const navigation = useNavigation();
 
-  const onSaved = (next: boolean) => () => {
+  const onSaved = (next: boolean) => {
     toast.show(editing ? t('records.updated') : t('entry.saved'));
-    if (!next) router.back();
+    if (!next) {
+      // Saisie enregistrée : plus rien à perdre, la garde de sortie laisse passer.
+      form.reset(form.getValues());
+      router.back();
+    }
   };
+  const saveAndClose = save(() => onSaved(false));
+  const saveAndNext = save(() => onSaved(true));
+
+  // Retour en arrière avec une saisie en cours : on demande avant de tout perdre.
+  usePreventRemove(dirty, ({ data }) => {
+    if (!form.formState.isDirty) return navigation.dispatch(data.action);
+    Alert.alert(t('entry.discardTitle'), t('entry.discardMessage'), [
+      { text: t('entry.keepEditing'), style: 'cancel' },
+      { text: t('entry.discard'), style: 'destructive', onPress: () => navigation.dispatch(data.action) },
+    ]);
+  });
+
+  const confirmClear = () =>
+    Alert.alert(t('entry.clearTitle'), t('entry.resetConfirm'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('common.clear'), style: 'destructive', onPress: () => form.reset() },
+    ]);
+
+  const lastTitle = last ? titleFieldOf(fields) : undefined;
+  const lastAmount = last ? amountFieldOf(fields) : undefined;
+  const lastSummary = last
+    ? [
+        lastTitle ? String(last.data[lastTitle.id] ?? '') : '',
+        lastAmount && typeof last.data[lastAmount.id] === 'number' ? formatAmount(Math.round(last.data[lastAmount.id] as number)) : '',
+      ]
+        .filter(Boolean)
+        .join(' · ')
+    : '';
 
   return (
     <Screen
       footer={
         editing ? (
-          <Button icon={FloppyDiskIcon} label={t('common.save')} onPress={save(onSaved(false))} />
+          <Button icon={FloppyDiskIcon} label={t('common.save')} onPress={saveAndClose} />
         ) : (
           <>
-            <Button variant="secondary" icon={PlusIcon} label={t('common.saveAndNext')} onPress={save(onSaved(true))} />
-            <Button icon={FloppyDiskIcon} label={t('common.save')} onPress={save(onSaved(false))} />
+            <Button variant="secondary" icon={PlusIcon} label={t('common.saveAndNext')} onPress={saveAndNext} />
+            <Button icon={FloppyDiskIcon} label={t('common.save')} onPress={saveAndClose} />
           </>
         )
       }
     >
-      <Stack.Screen options={{ title: editing ? t('records.editTitle') : t('entry.title') }} />
+      <Stack.Screen
+        options={{
+          title: editing ? t('records.editTitle') : t('entry.title'),
+          headerRight: () =>
+            dirty ? <IconButton icon={EraserIcon} label={t('entry.clearTitle')} onPress={confirmClear} /> : null,
+        }}
+      />
+      {last && !dirty ? (
+        <Section flush>
+          <ListRow
+            icon={ArrowsClockwiseIcon}
+            iconBg="primarySoft"
+            iconFg="onPrimarySoft"
+            title={t('entry.repeatLast')}
+            subtitle={lastSummary || undefined}
+            onPress={repeatLast}
+          />
+        </Section>
+      ) : null}
       {fields.map((field) => {
         if (field.type === 'formula') {
           const value = computed.data[field.id];
@@ -88,6 +148,8 @@ function EntryForm({ tableId, fields, existing }: { tableId: string; fields: Fie
             name={field.id}
             render={({ field: input }) => (
               <FieldInput
+                tableId={tableId}
+                onPickKnown={editing ? undefined : pickKnownValue}
                 field={field}
                 fields={fields}
                 values={values}
@@ -104,6 +166,9 @@ function EntryForm({ tableId, fields, existing }: { tableId: string; fields: Fie
 }
 
 type InputProps = {
+  tableId: string;
+  /** Choix d'une valeur déjà connue : préremplit prix et unité (nouvelle saisie seulement). */
+  onPickKnown?: (fieldId: string, value: string) => void;
   field: Field;
   fields: Field[];
   values: RecordData;
@@ -114,7 +179,7 @@ type InputProps = {
 };
 
 /** Le bon contrôle pour chaque type de champ : rien à taper quand on peut l'éviter. */
-function FieldInput({ field, fields, values, saved, input, error }: InputProps) {
+function FieldInput({ tableId, onPickKnown, field, fields, values, saved, input, error }: InputProps) {
   const { t } = useTranslation();
   const photos = usePhotoPicker();
 
@@ -197,6 +262,18 @@ function FieldInput({ field, fields, values, saved, input, error }: InputProps) 
         />
       );
     }
+    case 'text':
+      return (
+        <TextWithSuggestions
+          tableId={tableId}
+          field={field}
+          value={input.value === null || input.value === undefined ? '' : String(input.value)}
+          onChange={input.onChange}
+          onBlur={input.onBlur}
+          onPick={(value) => (onPickKnown ? onPickKnown(field.id, value) : input.onChange(value))}
+          error={error}
+        />
+      );
     default:
       return (
         <TextField
@@ -210,6 +287,34 @@ function FieldInput({ field, fields, values, saved, input, error }: InputProps) 
         />
       );
   }
+}
+
+/** Texte avec les valeurs déjà saisies proposées en dessous (produits, clients…). */
+function TextWithSuggestions({
+  tableId,
+  field,
+  value,
+  onChange,
+  onBlur,
+  onPick,
+  error,
+}: {
+  tableId: string;
+  field: Field;
+  value: string;
+  onChange: (value: string) => void;
+  onBlur: () => void;
+  onPick: (value: string) => void;
+  error?: string;
+}) {
+  const { t } = useTranslation();
+  const suggestions = useSuggestions(tableId, field.id, value);
+  return (
+    <View style={{ gap: spacing.sm }}>
+      <TextField label={field.name} required={field.required} value={value} onChangeText={onChange} onBlur={onBlur} error={error} />
+      <SuggestionChips suggestions={suggestions} onPick={onPick} labelPrefix={t('entry.suggestion')} />
+    </View>
+  );
 }
 
 /** Saisie impossible sans champ : on envoie vers l'éditeur plutôt qu'un écran blanc. */

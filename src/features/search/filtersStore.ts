@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 import type { RecordQuery } from '@/data/repositories';
+import { isoDaysFromToday } from '@/services/dates';
 import { todayIso } from '@/services/tables';
 
 export type Period = 'all' | 'today' | 'week' | 'month';
@@ -8,29 +9,31 @@ export type Period = 'all' | 'today' | 'week' | 'month';
 type FiltersState = {
   search: string;
   period: Period;
-  sortDirection: 'asc' | 'desc';
+  /** Clé d'une option de `sortOptions` (« newest », « largest », « az »…). */
+  sortKey: string;
+  /** Filtre sur une liste de choix : Paiement = MVola. */
+  equals: { fieldId: string; value: string } | null;
   setSearch: (search: string) => void;
   setPeriod: (period: Period) => void;
-  toggleSort: () => void;
+  setSortKey: (sortKey: string) => void;
+  setEquals: (equals: { fieldId: string; value: string } | null) => void;
   reset: () => void;
 };
 
-const initial = { search: '', period: 'all' as Period, sortDirection: 'desc' as const };
+const initial = { search: '', period: 'all' as Period, sortKey: 'newest', equals: null };
 
 /** Filtres de consultation du tableau sélectionné ; réinitialisation en un geste. */
 export const useFilters = create<FiltersState>((set) => ({
   ...initial,
   setSearch: (search) => set({ search }),
   setPeriod: (period) => set({ period }),
-  toggleSort: () => set((s) => ({ sortDirection: s.sortDirection === 'asc' ? 'desc' : 'asc' })),
+  setSortKey: (sortKey) => set({ sortKey }),
+  setEquals: (equals) => set({ equals }),
   reset: () => set(initial),
 }));
 
-const isoDaysAgo = (days: number) => {
-  const d = new Date();
-  d.setDate(d.getDate() - days);
-  return d.toISOString().slice(0, 10);
-};
+// Dates locales (heure du téléphone) : en UTC, Madagascar (UTC+3) changeait de jour à 3 h du matin.
+const isoDaysAgo = (days: number) => isoDaysFromToday(-days);
 
 export function periodRange(period: Period): Pick<RecordQuery, 'from' | 'to'> {
   switch (period) {

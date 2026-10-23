@@ -25,7 +25,8 @@
     "moveDown": "Descendre",
     "clear": "Effacer",
     "seeAll": "Tout voir",
-    "soon": "Bientôt"
+    "soon": "Bientôt",
+    "undo": "Annuler"
   },
   "home": {
     "today": "Aujourd'hui",
@@ -85,7 +86,14 @@
   "entry": {
     "title": "Nouvelle saisie",
     "saved": "Ligne enregistrée",
-    "resetConfirm": "Effacer les données saisies ?"
+    "resetConfirm": "Effacer les données saisies ?",
+    "repeatLast": "Reprendre la dernière saisie",
+    "discardTitle": "Abandonner la saisie ?",
+    "discardMessage": "Ce que vous avez tapé ne sera pas enregistré.",
+    "keepEditing": "Continuer la saisie",
+    "discard": "Abandonner",
+    "clearTitle": "Effacer le formulaire",
+    "suggestion": "Suggestion :"
   },
   "templates": {
     "sales": "Ventes",
@@ -294,8 +302,6 @@
     "emptyTitle": "Aucune ligne",
     "emptyMessage": "Touchez « Saisie » pour ajouter la première.",
     "noMatch": "Aucune ligne ne correspond aux filtres",
-    "sortNewest": "Plus récentes d’abord",
-    "sortOldest": "Plus anciennes d’abord",
     "createdAt": "Créée le {{date}}",
     "details": "Détails",
     "lowStock": "Stock bas",
@@ -419,5 +425,25 @@
     "submit_one": "Créer le tableau · {{count}} colonne",
     "submit_other": "Créer le tableau · {{count}} colonnes",
     "done": "Tableau créé : vous pouvez saisir"
+  },
+  "trash": {
+    "title": "Corbeille",
+    "explain": "Les lignes supprimées restent ici {{days}} jours, puis sont effacées définitivement.",
+    "empty": "La corbeille est vide",
+    "when_one": "Supprimée le {{date}} · effacée dans {{count}} jour",
+    "when_other": "Supprimée le {{date}} · effacée dans {{count}} jours",
+    "restore": "Restaurer",
+    "restored": "Ligne restaurée",
+    "count_one": "{{count}} ligne supprimée",
+    "count_other": "{{count}} lignes supprimées"
+  },
+  "sort": {
+    "title": "Trier",
+    "newest": "Plus récentes d’abord",
+    "oldest": "Plus anciennes d’abord",
+    "largest": "{{field}} : plus grand d’abord",
+    "smallest": "{{field}} : plus petit d’abord",
+    "az": "{{field}} : A → Z",
+    "za": "{{field}} : Z → A"
   }
 }

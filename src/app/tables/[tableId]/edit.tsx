@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
 
-import { tablesRepo } from '@/data/repositories';
+import { recordsRepo, tablesRepo } from '@/data/repositories';
 import type { Field } from '@/data/schema';
 import { useTable } from '@/features/tables/useTables';
+import { useDbQuery } from '@/features/useDbQuery';
 import { missingPresets } from '@/services/fieldPresets';
 import { addPresetField, moveField } from '@/services/tables';
 import {
@@ -18,6 +19,7 @@ import {
   Chip,
   EmptyState,
   IconButton,
+  ListRow,
   PlusIcon,
   Screen,
   Section,
@@ -40,6 +42,7 @@ export default function EditTable() {
   const { table, fields } = useTable(tableId);
   const [name, setName] = useState(table?.name ?? '');
   const presets = missingPresets(fields, (id) => t(`presets.${id}`));
+  const trashCount = useDbQuery(() => recordsRepo.trashCount(tableId), [tableId]);
 
   if (!table) return null;
 
@@ -119,6 +122,14 @@ export default function EditTable() {
             onMove={(direction) => moveField(tableId, field.id, direction)}
           />
         ))}
+      </Section>
+      <Section flush>
+        <ListRow
+          icon={TrashIcon}
+          title={t('trash.title')}
+          subtitle={t('trash.count', { count: trashCount })}
+          onPress={() => router.push({ pathname: '/tables/[tableId]/trash', params: { tableId } })}
+        />
       </Section>
       <Section>
         <Button

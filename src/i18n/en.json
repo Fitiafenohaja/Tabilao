@@ -25,7 +25,8 @@
     "moveDown": "Move down",
     "clear": "Clear",
     "seeAll": "See all",
-    "soon": "Soon"
+    "soon": "Soon",
+    "undo": "Undo"
   },
   "home": {
     "today": "Today",
@@ -85,7 +86,14 @@
   "entry": {
     "title": "New entry",
     "saved": "Row saved",
-    "resetConfirm": "Clear the entered data?"
+    "resetConfirm": "Clear the entered data?",
+    "repeatLast": "Repeat the last entry",
+    "discardTitle": "Discard this entry?",
+    "discardMessage": "What you typed will not be saved.",
+    "keepEditing": "Keep editing",
+    "discard": "Discard",
+    "clearTitle": "Clear the form",
+    "suggestion": "Suggestion:"
   },
   "templates": {
     "sales": "Sales",
@@ -294,8 +302,6 @@
     "emptyTitle": "No rows",
     "emptyMessage": "Tap “Entry” to add the first one.",
     "noMatch": "No row matches the filters",
-    "sortNewest": "Newest first",
-    "sortOldest": "Oldest first",
     "createdAt": "Created {{date}}",
     "details": "Details",
     "lowStock": "Low stock",
@@ -419,5 +425,25 @@
     "submit_one": "Create table · {{count}} column",
     "submit_other": "Create table · {{count}} columns",
     "done": "Table created: you can start entering"
+  },
+  "trash": {
+    "title": "Trash",
+    "explain": "Deleted rows stay here for {{days}} days, then are permanently erased.",
+    "empty": "The trash is empty",
+    "when_one": "Deleted {{date}} · erased in {{count}} day",
+    "when_other": "Deleted {{date}} · erased in {{count}} days",
+    "restore": "Restore",
+    "restored": "Row restored",
+    "count_one": "{{count}} deleted row",
+    "count_other": "{{count}} deleted rows"
+  },
+  "sort": {
+    "title": "Sort",
+    "newest": "Newest first",
+    "oldest": "Oldest first",
+    "largest": "{{field}}: largest first",
+    "smallest": "{{field}}: smallest first",
+    "az": "{{field}}: A → Z",
+    "za": "{{field}}: Z → A"
   }
 }

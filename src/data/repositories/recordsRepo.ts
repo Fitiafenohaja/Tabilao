@@ -1,6 +1,8 @@
 import { and, asc, desc, eq, gte, inArray, isNotNull, isNull, lt, lte, sql, type SQL } from 'drizzle-orm';
 
 import type { Value } from '@/services/formula';
+import { likeContains } from '@/services/entryAssist';
+import { purgeLimit } from '@/services/trash';
 import type { RecordData } from '@/services/fields';
 import { applyEffect, invertEffect, parseRuleAction, ruleEffect, type RuleEffect } from '@/services/rules';
 
@@ -9,7 +11,7 @@ import { newId, nowIso } from '../ids';
 import { records, rules, type RecordRow } from '../schema';
 import { logRepo } from './logRepo';
 
-export const TRASH_RETENTION_DAYS = 30;
+export { TRASH_RETENTION_DAYS } from '@/services/trash';
 
 export type RecordItem = Omit<RecordRow, 'dataJson'> & { data: RecordData };
 
@@ -107,18 +109,28 @@ export const recordsRepo = {
       .map((r) => r.v);
   },
 
-  /** Autocomplétion à partir des valeurs déjà saisies, les plus fréquentes d'abord. */
-  suggestions(tableId: string, fieldId: string, prefix: string, limit = 8, ex: Executor = db): string[] {
+  /**
+   * Autocomplétion : valeurs déjà saisies qui contiennent le texte (sans casse), les plus fréquentes d'abord.
+   * Texte vide : les valeurs les plus fréquentes.
+   */
+  suggestions(tableId: string, fieldId: string, text: string, limit = 6, ex: Executor = db): string[] {
     const expr = fieldExpr(fieldId);
+    const conditions: SQL[] = [eq(records.tableId, tableId), isNull(records.deletedAt), sql`${expr} IS NOT NULL AND ${expr} <> ''`];
+    if (text.trim()) conditions.push(sql`${expr} LIKE ${likeContains(text.trim())} ESCAPE '\\'`);
     return ex
       .select({ v: sql<string>`${expr}` })
       .from(records)
-      .where(and(eq(records.tableId, tableId), isNull(records.deletedAt), sql`${expr} LIKE ${prefix + '%'}`))
+      .where(and(...conditions))
       .groupBy(expr)
-      .orderBy(sql`count(*) DESC`)
+      .orderBy(sql`count(*) DESC`, sql`max(${records.createdAt}) DESC`)
       .limit(limit)
       .all()
       .map((r) => r.v);
+  },
+
+  /** Dernière ligne où une colonne vaut exactement `value` (ex. le dernier « Savon Nosy » vendu). */
+  lastWhere(tableId: string, fieldId: string, value: string, ex: Executor = db): RecordItem | undefined {
+    return this.list(tableId, { equals: { fieldId, value }, limit: 1 }, ex)[0];
   },
 
   /** Dernière ligne saisie, pour le préremplissage. */
@@ -171,6 +183,16 @@ export const recordsRepo = {
     });
   },
 
+  trashCount(tableId: string, ex: Executor = db): number {
+    return (
+      ex
+        .select({ n: sql<number>`count(*)` })
+        .from(records)
+        .where(and(eq(records.tableId, tableId), isNotNull(records.deletedAt)))
+        .get()?.n ?? 0
+    );
+  },
+
   trash(tableId: string, ex: Executor = db): RecordItem[] {
     return ex
       .select()
@@ -183,8 +205,7 @@ export const recordsRepo = {
 
   /** Vide la corbeille au-delà de la durée de rétention. */
   purgeTrash(ex: Executor = db) {
-    const limit = new Date(Date.now() - TRASH_RETENTION_DAYS * 86_400_000).toISOString();
-    ex.delete(records).where(and(isNotNull(records.deletedAt), lt(records.deletedAt, limit))).run();
+    ex.delete(records).where(and(isNotNull(records.deletedAt), lt(records.deletedAt, purgeLimit()))).run();
   },
 
   /** Données de toutes les lignes actives (détection des doublons à l'import). */

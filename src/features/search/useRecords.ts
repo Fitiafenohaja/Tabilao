@@ -1,13 +1,25 @@
-import { recordsRepo } from '@/data/repositories';
+import { recordsRepo, type RecordQuery } from '@/data/repositories';
+import type { SortOption } from '@/services/sorting';
 import { sumValues } from '@/services/summary';
 
 import { useDbQuery } from '../useDbQuery';
 import { periodRange, useFilters } from './filtersStore';
 
-/** Lignes filtrées, nombre total, et somme du champ montant sur tout le résultat filtré. */
-export function useRecords(tableId: string, dateFieldId?: string, amountFieldId?: string) {
-  const { search, period, sortDirection } = useFilters();
-  const query = { search, dateFieldId, ...periodRange(period), sort: { direction: sortDirection }, limit: 200 };
+/** Lignes filtrées et triées, nombre total, et somme du champ montant sur tout le résultat filtré. */
+export function useRecords(
+  tableId: string,
+  options: { dateFieldId?: string; amountFieldId?: string; sort?: Pick<SortOption, 'fieldId' | 'direction'> } = {},
+) {
+  const { dateFieldId, amountFieldId, sort } = options;
+  const { search, period, equals } = useFilters();
+  const query: RecordQuery = {
+    search,
+    dateFieldId,
+    ...periodRange(period),
+    equals: equals ?? undefined,
+    sort: { fieldId: sort?.fieldId ?? undefined, direction: sort?.direction ?? 'desc' },
+    limit: 200,
+  };
   const key = JSON.stringify(query);
   const records = useDbQuery(() => recordsRepo.list(tableId, query), [tableId, key]);
   const total = useDbQuery(() => recordsRepo.count(tableId, query), [tableId, key]);
