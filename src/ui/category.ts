@@ -18,3 +18,16 @@ export function categoryVisual(category: string | null | undefined): CategoryVis
       return { icon: TableIcon, bg: 'neutralSoft', fg: 'textMuted' };
   }
 }
+
+/** Clé i18n du compteur de saisies selon le tableau : « 3 ventes », « Aucun produit »… (jamais « 0 lignes »). */
+export function countKey(category: string | null | undefined): string {
+  switch (category) {
+    case 'income':
+    case 'expense':
+    case 'stock':
+    case 'credit':
+      return `counts.${category}`;
+    default:
+      return 'counts.other';
+  }
+}

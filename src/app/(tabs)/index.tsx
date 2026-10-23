@@ -21,6 +21,7 @@ import {
   StatTile,
   Text,
   categoryVisual,
+  countKey,
   spacing,
   useTheme,
   GearSixIcon,
@@ -104,13 +105,13 @@ function TableTile({ table, onPress }: { table: TableCardData; onPress: () => vo
   const { t } = useTranslation();
   const visual = categoryVisual(table.category);
   return (
-    <Card style={styles.tile} onPress={onPress} accessibilityLabel={`${table.name}, ${t('common.rows', { count: table.recordCount })}`}>
+    <Card style={styles.tile} onPress={onPress} accessibilityLabel={`${table.name}, ${t(countKey(table.category), { count: table.recordCount })}`}>
       <IconTile icon={visual.icon} bg={visual.bg} fg={visual.fg} />
       <Text variant="heading" numberOfLines={1}>
         {table.name}
       </Text>
       <Text variant="caption" tone="muted">
-        {t('common.rows', { count: table.recordCount })}
+        {t(countKey(table.category), { count: table.recordCount })}
       </Text>
       {table.todayTotal !== null ? (
         <Text variant="label" tone={table.category === 'expense' ? 'danger' : 'primary'} numberOfLines={1}>

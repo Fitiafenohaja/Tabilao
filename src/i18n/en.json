@@ -445,5 +445,25 @@
     "smallest": "{{field}}: smallest first",
     "az": "{{field}}: A → Z",
     "za": "{{field}}: Z → A"
+  },
+  "counts": {
+    "income_zero": "No sales yet",
+    "income_one": "{{count}} sale",
+    "income_other": "{{count}} sales",
+    "expense_zero": "No expenses yet",
+    "expense_one": "{{count}} expense",
+    "expense_other": "{{count}} expenses",
+    "stock_zero": "No products yet",
+    "stock_one": "{{count}} product",
+    "stock_other": "{{count}} products",
+    "credit_zero": "No credits yet",
+    "credit_one": "{{count}} credit",
+    "credit_other": "{{count}} credits",
+    "other_zero": "No entries yet",
+    "other_one": "{{count}} entry",
+    "other_other": "{{count}} entries",
+    "all_zero": "No entries yet",
+    "all_one": "{{count}} entry in total",
+    "all_other": "{{count}} entries in total"
   }
 }

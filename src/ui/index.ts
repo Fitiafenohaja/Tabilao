@@ -1,4 +1,4 @@
-export { categoryVisual, type CategoryVisual } from './category';
+export { categoryVisual, countKey, type CategoryVisual } from './category';
 export * from './components';
 export { appFonts } from './fonts';
 export * from './icons';

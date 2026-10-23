@@ -445,5 +445,25 @@
     "smallest": "{{field}} : plus petit d’abord",
     "az": "{{field}} : A → Z",
     "za": "{{field}} : Z → A"
+  },
+  "counts": {
+    "income_zero": "Aucune vente",
+    "income_one": "{{count}} vente",
+    "income_other": "{{count}} ventes",
+    "expense_zero": "Aucune dépense",
+    "expense_one": "{{count}} dépense",
+    "expense_other": "{{count}} dépenses",
+    "stock_zero": "Aucun produit",
+    "stock_one": "{{count}} produit",
+    "stock_other": "{{count}} produits",
+    "credit_zero": "Aucun crédit",
+    "credit_one": "{{count}} crédit",
+    "credit_other": "{{count}} crédits",
+    "other_zero": "Aucune saisie",
+    "other_one": "{{count}} saisie",
+    "other_other": "{{count}} saisies",
+    "all_zero": "Aucune saisie",
+    "all_one": "{{count}} saisie au total",
+    "all_other": "{{count}} saisies au total"
   }
 }

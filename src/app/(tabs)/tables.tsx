@@ -19,6 +19,7 @@ import {
   SearchField,
   Text,
   categoryVisual,
+  countKey,
   spacing,
   useTheme,
   CaretRightIcon,
@@ -40,7 +41,7 @@ export default function TablesTab() {
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <ScreenHeader
         title={t('tables.title')}
-        subtitle={t('common.rows', { count: tables.reduce((n, table) => n + table.recordCount, 0) })}
+        subtitle={t('counts.all', { count: tables.reduce((n, table) => n + table.recordCount, 0) })}
         actions={
           <>
             <IconButton icon={FileArrowDownIcon} label={t('import.title')} onPress={() => router.push('/import')} />
@@ -80,7 +81,7 @@ function TableRow({ table }: { table: TableSummary }) {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const visual = categoryVisual(table.category);
-  const rows = t('common.rows', { count: table.recordCount });
+  const rows = t(countKey(table.category), { count: table.recordCount });
   return (
     <Card
       style={styles.row}

@@ -445,5 +445,25 @@
     "smallest": "{{field}} : ny kely indrindra aloha",
     "az": "{{field}} : A → Z",
     "za": "{{field}} : Z → A"
+  },
+  "counts": {
+    "income_zero": "Tsy mbola misy varotra",
+    "income_one": "Varotra {{count}}",
+    "income_other": "Varotra {{count}}",
+    "expense_zero": "Tsy mbola misy fandaniana",
+    "expense_one": "Fandaniana {{count}}",
+    "expense_other": "Fandaniana {{count}}",
+    "stock_zero": "Tsy mbola misy entana",
+    "stock_one": "Entana {{count}}",
+    "stock_other": "Entana {{count}}",
+    "credit_zero": "Tsy mbola misy trosa",
+    "credit_one": "Trosa {{count}}",
+    "credit_other": "Trosa {{count}}",
+    "other_zero": "Tsy mbola misy fampidirana",
+    "other_one": "Fampidirana {{count}}",
+    "other_other": "Fampidirana {{count}}",
+    "all_zero": "Tsy mbola misy fampidirana",
+    "all_one": "Fampidirana {{count}} raha atambatra",
+    "all_other": "Fampidirana {{count}} raha atambatra"
   }
 }

@@ -41,6 +41,7 @@ import {
   tabBarHeight,
   useTheme,
   useToast,
+  countKey,
 } from '@/ui';
 
 const PERIODS: Period[] = ['all', 'today', 'week', 'month'];
@@ -202,7 +203,7 @@ export default function TableView() {
             <View style={[styles.summary, { borderColor: colors.border }]}>
               <View style={{ flex: 1 }}>
                 <Text variant="caption" tone="muted">
-                  {t('common.rows', { count: total })}
+                  {t(countKey(table?.category), { count: total })}
                 </Text>
                 {sum !== null ? (
                   <Text variant="amount" tone="primary">

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { useTables } from '@/features/tables/useTables';
-import { EmptyState, ListRow, Screen, Section, TableIcon, categoryVisual } from '@/ui';
+import { EmptyState, ListRow, Screen, Section, TableIcon, categoryVisual, countKey } from '@/ui';
 
 // Feuille « + Saisie » : choisir le tableau, puis saisie rapide (parcours en 3 gestes).
 export default function QuickEntry() {
@@ -32,7 +32,7 @@ export default function QuickEntry() {
                   iconBg={visual.bg}
                   iconFg={visual.fg}
                   title={table.name}
-                  subtitle={t('common.rows', { count: table.recordCount })}
+                  subtitle={t(countKey(table.category), { count: table.recordCount })}
                   onPress={() => router.replace({ pathname: '/tables/[tableId]/entry', params: { tableId: table.id } })}
                 />
               );
