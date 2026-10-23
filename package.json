@@ -96,6 +96,7 @@
     "roots": [
       "<rootDir>/src",
       "<rootDir>/tests"
-    ]
+    ],
+    "maxWorkers": 2
   }
 }
