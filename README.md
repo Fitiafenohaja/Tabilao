@@ -49,7 +49,8 @@ Sur téléphone, saisir des ventes dans Excel est lent, répétitif et source d'
 - **Tableaux personnalisés** : texte, nombre, montant, date, oui/non, liste de choix, champ calculé.
 - **Modèles prêts à l'emploi** : ventes, dépenses, stock, crédits clients (*trosa*).
 - **Saisie rapide** : formulaire généré automatiquement, date du jour préremplie, calcul en direct, « Enregistrer et ajouter un autre ».
-- **Formules simples et sûres** : `{Quantité} * {Prix unitaire}`, `SOMME`, `MOYENNE`, `MIN`, `MAX`, `SI(…; …; …)`, pourcentages. Un interpréteur maison, sans `eval`, refuse les références circulaires.
+- **Quantités souples** : `1,5`, `1.5`, `1 000`, `1/2` ou `½` sont compris de la même façon en saisie et à l'import ; boutons − / + ; unité fixe (kg) ou choisie ligne par ligne (pièce, kg, litre, kapoaka, sachet…) ; option « nombres entiers seulement » pour ce qui se vend à la pièce.
+- **Formules simples et sûres** : `{Quantité} * {Prix unitaire}`, `SOMME`, `MOYENNE`, `MIN`, `MAX`, `SI(…; …; …)`, pourcentages. Un interpréteur maison, sans `eval`, refuse les références circulaires. Tout calcul qui dépend d'un montant est arrondi à l'ariary.
 - **Import Excel et CSV** en 10 étapes : choix de la feuille, ligne d'en-tête, association des colonnes, détection des doublons et des valeurs invalides, import en une seule transaction, rapport d'erreurs exportable.
 - **Export** `.xlsx` (avec ligne de totaux) ou `.csv`, partageable par WhatsApp, e-mail ou Drive.
 - **Recherche et filtres** : recherche plein texte (FTS5), période (aujourd'hui, semaine, mois), tri, total du résultat filtré.

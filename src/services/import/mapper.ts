@@ -2,6 +2,7 @@ import type { FieldType } from '@/data/schema';
 
 import type { Value } from '../formula';
 import { parseAmount } from '../money';
+import { parseQuantity } from '../quantity';
 import type { Cell, RawSheet } from './types';
 
 /** Ligne d'en-tête probable : la première dont toutes les cellules non vides sont du texte. */
@@ -38,8 +39,8 @@ export function convertCell(cell: Cell, type: FieldType): Value | undefined {
   const s = String(cell).trim();
   switch (type) {
     case 'number': {
-      const n = typeof cell === 'number' ? cell : Number(s.replace(/\s/g, '').replace(',', '.'));
-      return Number.isNaN(n) ? undefined : n;
+      const parsed = parseQuantity(typeof cell === 'number' ? cell : s);
+      return parsed.ok ? parsed.value : undefined;
     }
     case 'money':
       return typeof cell === 'number' ? Math.round(cell) : (parseAmount(s) ?? undefined);

@@ -5,7 +5,7 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import { recordsRepo } from '@/data/repositories';
 import type { Field } from '@/data/schema';
-import { computeRow, type RecordData } from '@/services/fields';
+import { computeRow, normalizeNumbers, type RecordData } from '@/services/fields';
 import { initialValues } from '@/services/tables';
 import { buildZodSchema } from '@/services/validation/buildZodSchema';
 
@@ -16,7 +16,7 @@ export function useEntryForm(tableId: string, fields: readonly Field[]) {
 
   const form = useForm<RecordData>({ resolver: zodResolver(schema) as never, defaultValues: defaults, mode: 'onBlur' });
   const values = useWatch({ control: form.control }) as RecordData;
-  const computed = useMemo(() => computeRow(fields, values), [fields, values]);
+  const computed = useMemo(() => computeRow(fields, normalizeNumbers(fields, values)), [fields, values]);
 
   const save = (onSaved?: () => void) => () =>
     void form.handleSubmit((data) => {
@@ -26,5 +26,5 @@ export function useEntryForm(tableId: string, fields: readonly Field[]) {
       onSaved?.();
     })();
 
-  return { form, computed, save };
+  return { form, values, computed, save };
 }

@@ -198,7 +198,12 @@
     "archiveTable": "Arisivy ny tabilao",
     "unarchiveTable": "Avoaka amin'ny arisiva",
     "deleteTable": "Hamafa ny tabilao",
-    "saved": "Voatahiry ny saha"
+    "saved": "Voatahiry ny saha",
+    "unit": "Refy",
+    "unitNone": "Tsy misy",
+    "unitHint": "Avelao « Tsy misy » raha miova arakaraka ny entana ny refy : ampio saha « Unité » (lisitra safidy).",
+    "integerOnly": "Isa feno ihany",
+    "integerOnlyHint": "Ho an'izay amidy isam-batany : 1, 2, 3… tsy misy faingo."
   },
   "export": {
     "title": "Haondrana",
@@ -292,5 +297,10 @@
     "disableConfirm": "Hisokatra tsy misy kaody ny Tabilao. Hangatahina ny kaodinao ankehitriny.",
     "badgeOn": "Mandeha",
     "badgeOff": "Tapaka"
+  },
+  "quantity": {
+    "decrease": "Hampihena ny {{field}}",
+    "increase": "Hampitombo ny {{field}}",
+    "hint": "Ohatra : 2, 1,5 na 1/2"
   }
 }

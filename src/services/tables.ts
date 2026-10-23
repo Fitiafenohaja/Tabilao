@@ -60,6 +60,10 @@ export type FieldDraft = {
   formula: string | null;
   min: number | null;
   max: number | null;
+  /** Nombre : unité affichée (kg, kapoaka…) ; null = aucune ou unité choisie ligne par ligne. */
+  unit: string | null;
+  /** Nombre : entiers seulement (pièces, bouteilles…). */
+  integerOnly: boolean;
 };
 
 /** Brouillon éditable à partir d'un champ existant. */
@@ -74,6 +78,8 @@ export function draftFromField(field: Field): FieldDraft {
     formula: field.formula,
     min: validation.min ?? null,
     max: validation.max ?? null,
+    unit: fieldOptions(field).unit ?? null,
+    integerOnly: validation.decimals === 0,
   };
 }
 
@@ -81,8 +87,15 @@ function draftToInput(draft: FieldDraft) {
   const isFormula = draft.type === 'formula';
   const numeric = draft.type === 'number' || draft.type === 'money';
   const validation = numeric
-    ? Object.fromEntries(Object.entries({ min: draft.min, max: draft.max }).filter(([, v]) => v !== null))
+    ? Object.fromEntries(
+        Object.entries({
+          min: draft.min,
+          max: draft.max,
+          decimals: draft.type === 'number' && draft.integerOnly ? 0 : null,
+        }).filter(([, v]) => v !== null),
+      )
     : {};
+  const unit = draft.type === 'number' ? draft.unit?.trim() || null : null;
   const choices = draft.choices.map((c) => c.trim()).filter(Boolean);
   if (draft.type === 'choice' && choices.length === 0) {
     throw new FieldDefinitionError('Ajoutez au moins un choix à la liste');
@@ -93,7 +106,12 @@ function draftToInput(draft: FieldDraft) {
     required: isFormula ? false : draft.required,
     defaultValue: isFormula || !draft.defaultValue?.trim() ? null : draft.defaultValue.trim(),
     formula: isFormula ? (draft.formula?.trim() ?? '') : null,
-    optionsJson: draft.type === 'choice' ? JSON.stringify({ choices: [...new Set(choices)] }) : null,
+    optionsJson:
+      draft.type === 'choice'
+        ? JSON.stringify({ choices: [...new Set(choices)] })
+        : unit
+          ? JSON.stringify({ unit })
+          : null,
     validationJson: Object.keys(validation).length ? JSON.stringify(validation) : null,
   };
 }

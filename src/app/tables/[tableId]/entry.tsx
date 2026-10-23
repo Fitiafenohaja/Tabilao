@@ -6,9 +6,24 @@ import { View } from 'react-native';
 import type { Field } from '@/data/schema';
 import { useEntryForm } from '@/features/entry/useEntryForm';
 import { useTable } from '@/features/tables/useTables';
-import { fieldOptions } from '@/services/fields';
+import { fieldOptions, fieldValidation, unitFor } from '@/services/fields';
 import { formatAmount } from '@/services/money';
-import { Button, CheckIcon, Chip, ComputedField, FloppyDiskIcon, PlusIcon, Screen, Text, TextField, WarningIcon, spacing, useTheme, useToast } from '@/ui';
+import {
+  Button,
+  CheckIcon,
+  Chip,
+  ComputedField,
+  FloppyDiskIcon,
+  PlusIcon,
+  QuantityField,
+  Screen,
+  Text,
+  TextField,
+  WarningIcon,
+  spacing,
+  useTheme,
+  useToast,
+} from '@/ui';
 
 // Saisie rapide : parcours en 3 gestes (toucher, remplir, enregistrer).
 export default function Entry() {
@@ -21,7 +36,7 @@ export default function Entry() {
 function EntryForm({ tableId, fields }: { tableId: string; fields: Field[] }) {
   const { t } = useTranslation();
   const toast = useToast();
-  const { form, computed, save } = useEntryForm(tableId, fields);
+  const { form, values, computed, save } = useEntryForm(tableId, fields);
   const errors = form.formState.errors;
 
   const onSaved = (next: boolean) => () => {
@@ -79,6 +94,21 @@ function EntryForm({ tableId, fields }: { tableId: string; fields: Field[] }) {
                   </View>
                   {error ? <FieldError message={error} /> : null}
                 </View>
+              ) : field.type === 'number' ? (
+                <QuantityField
+                  label={field.name}
+                  required={field.required}
+                  value={input.value}
+                  onChange={input.onChange}
+                  onBlur={input.onBlur}
+                  unit={unitFor(field, fields, values)}
+                  integerOnly={fieldValidation(field).decimals === 0}
+                  min={fieldValidation(field).min}
+                  error={error}
+                  help={fieldValidation(field).decimals === 0 ? undefined : t('quantity.hint')}
+                  decreaseLabel={t('quantity.decrease', { field: field.name })}
+                  increaseLabel={t('quantity.increase', { field: field.name })}
+                />
               ) : (
                 <TextField
                   label={field.name}
@@ -86,7 +116,7 @@ function EntryForm({ tableId, fields }: { tableId: string; fields: Field[] }) {
                   value={input.value === null || input.value === undefined ? '' : String(input.value)}
                   onChangeText={input.onChange}
                   onBlur={input.onBlur}
-                  keyboardType={field.type === 'number' || field.type === 'money' ? 'numeric' : 'default'}
+                  keyboardType={field.type === 'money' ? 'numeric' : 'default'}
                   placeholder={field.type === 'date' ? 'AAAA-MM-JJ' : undefined}
                   error={error}
                 />

@@ -6,13 +6,25 @@ import { Alert, View } from 'react-native';
 import type { Field, FieldType } from '@/data/schema';
 import { useTable } from '@/features/tables/useTables';
 import { assertFieldSet, FieldDefinitionError } from '@/services/fieldRules';
+import { UNITS } from '@/services/quantity';
 import { deleteField, draftFromField, saveField, type FieldDraft } from '@/services/tables';
 import { Banner, Button, CheckIcon, Chip, FloppyDiskIcon, Screen, Section, Text, TextField, TrashIcon, spacing, useToast } from '@/ui';
 
 // Types proposés à la création ; « Référence » et « Photo » arrivent avec la v1.1.
 const EDITABLE_TYPES: FieldType[] = ['text', 'number', 'money', 'date', 'boolean', 'choice', 'formula'];
 
-const EMPTY: FieldDraft = { name: '', type: 'text', required: false, defaultValue: null, choices: [], formula: null, min: null, max: null };
+const EMPTY: FieldDraft = {
+  name: '',
+  type: 'text',
+  required: false,
+  defaultValue: null,
+  choices: [],
+  formula: null,
+  min: null,
+  max: null,
+  unit: null,
+  integerOnly: false,
+};
 
 const parseNumber = (s: string): number | null => {
   const n = Number(s.replace(',', '.').replace(/\s/g, ''));
@@ -138,6 +150,31 @@ function FieldForm({ tableId, field, others }: { tableId: string; field?: Field;
           />
           {draft.type === 'choice' ? (
             <TextField label={t('fieldEditor.choices')} value={choicesText} onChangeText={setChoicesText} />
+          ) : null}
+          {draft.type === 'number' ? (
+            <>
+              <Section title={t('fieldEditor.unit')}>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+                  <Chip label={t('fieldEditor.unitNone')} selected={!draft.unit} onPress={() => set({ unit: null })} />
+                  {UNITS.map((u) => (
+                    <Chip key={u.id} label={u.short} selected={draft.unit === u.short} onPress={() => set({ unit: u.short })} />
+                  ))}
+                </View>
+                <Text variant="caption" tone="muted">
+                  {t('fieldEditor.unitHint')}
+                </Text>
+              </Section>
+              <Chip
+                icon={draft.integerOnly ? CheckIcon : undefined}
+                label={t('fieldEditor.integerOnly')}
+                accessibilityLabel={`${t('fieldEditor.integerOnly')}. ${t('fieldEditor.integerOnlyHint')}`}
+                selected={draft.integerOnly}
+                onPress={() => set({ integerOnly: !draft.integerOnly })}
+              />
+              <Text variant="caption" tone="muted">
+                {t('fieldEditor.integerOnlyHint')}
+              </Text>
+            </>
           ) : null}
           {numeric ? (
             <View style={{ flexDirection: 'row', gap: spacing.md }}>

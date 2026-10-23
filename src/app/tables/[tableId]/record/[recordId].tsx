@@ -7,7 +7,9 @@ import { recordsRepo } from '@/data/repositories';
 import { useTable } from '@/features/tables/useTables';
 import { useDbQuery } from '@/features/useDbQuery';
 import { formatDate } from '@/i18n/format';
+import { unitFor } from '@/services/fields';
 import { formatAmount } from '@/services/money';
+import { formatQuantity } from '@/services/quantity';
 import { amountFieldOf, titleFieldOf } from '@/services/summary';
 import { Button, CalculatorIcon, Card, CopyIcon, Screen, Section, Text, TrashIcon, iconSize, spacing, useTheme, useToast } from '@/ui';
 
@@ -26,6 +28,7 @@ export default function RecordDetail() {
     const field = fields.find((f) => f.id === fieldId)!;
     const v = record.data[fieldId];
     if (v === null || v === undefined || v === '') return '—';
+    if (field.type === 'number' && typeof v === 'number') return formatQuantity(v, unitFor(field, fields, record.data));
     if ((field.type === 'money' || field.type === 'formula') && typeof v === 'number') return formatAmount(Math.round(v));
     if (field.type === 'date' && typeof v === 'string') return formatDate(v);
     if (typeof v === 'boolean') return v ? t('common.yes') : t('common.no');

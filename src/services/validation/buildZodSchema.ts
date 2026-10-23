@@ -4,6 +4,7 @@ import type { Field } from '@/data/schema';
 
 import { fieldOptions, fieldValidation } from '../fields';
 import { parseAmount } from '../money';
+import { decimalsOf, DEFAULT_DECIMALS, formatQuantity, parseQuantity } from '../quantity';
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -15,10 +16,34 @@ function schemaFor(field: Field): z.ZodType {
 
   switch (field.type) {
     case 'number': {
-      let s = z.coerce.number({ message: `${label} : nombre attendu` });
-      if (rules.min !== undefined) s = s.min(rules.min, `${label} : minimum ${rules.min}`);
-      if (rules.max !== undefined) s = s.max(rules.max, `${label} : maximum ${rules.max}`);
-      return s;
+      const decimals = rules.decimals ?? DEFAULT_DECIMALS;
+      const unit = fieldOptions(field).unit;
+      return z.any().transform((input, ctx) => {
+        const parsed = parseQuantity(input as string | number);
+        if (!parsed.ok) {
+          ctx.addIssue({
+            code: 'custom',
+            message:
+              parsed.error === 'letters'
+                ? `${label} : tapez seulement le nombre${unit ? ` (en ${unit})` : ''}`
+                : `${label} : nombre attendu, par exemple 2 ou 1,5`,
+          });
+          return z.NEVER;
+        }
+        const { value } = parsed;
+        if (decimals === 0 && !Number.isInteger(value)) {
+          ctx.addIssue({ code: 'custom', message: `${label} : nombre entier attendu (pas de virgule)` });
+        } else if (decimalsOf(value) > decimals) {
+          ctx.addIssue({ code: 'custom', message: `${label} : ${decimals} chiffres après la virgule au maximum` });
+        }
+        if (rules.min !== undefined && value < rules.min) {
+          ctx.addIssue({ code: 'custom', message: `${label} : minimum ${formatQuantity(rules.min, unit)}` });
+        }
+        if (rules.max !== undefined && value > rules.max) {
+          ctx.addIssue({ code: 'custom', message: `${label} : maximum ${formatQuantity(rules.max, unit)}` });
+        }
+        return value;
+      });
     }
     case 'money': {
       let s = z.number({ message: `${label} : montant invalide` }).int();

@@ -22,3 +22,4 @@ export { ToastHost, useToast } from './Toast';
 export { TricolorBand } from './TricolorBand';
 export { PinDots } from './PinDots';
 export { PinPad } from './PinPad';
+export { QuantityField } from './QuantityField';

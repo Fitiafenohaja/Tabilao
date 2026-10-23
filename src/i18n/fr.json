@@ -198,7 +198,12 @@
     "archiveTable": "Archiver le tableau",
     "unarchiveTable": "Désarchiver le tableau",
     "deleteTable": "Supprimer le tableau",
-    "saved": "Champ enregistré"
+    "saved": "Champ enregistré",
+    "unit": "Unité",
+    "unitNone": "Aucune",
+    "unitHint": "Laissez « Aucune » si l’unité change selon le produit : ajoutez alors un champ « Unité » (liste de choix).",
+    "integerOnly": "Nombres entiers seulement",
+    "integerOnlyHint": "Pour ce qui se vend à la pièce : 1, 2, 3… sans virgule."
   },
   "export": {
     "title": "Exporter",
@@ -292,5 +297,10 @@
     "disableConfirm": "Tabilao s’ouvrira sans code. Votre code actuel vous sera demandé.",
     "badgeOn": "Activé",
     "badgeOff": "Désactivé"
+  },
+  "quantity": {
+    "decrease": "Diminuer {{field}}",
+    "increase": "Augmenter {{field}}",
+    "hint": "Ex. 2, 1,5 ou 1/2"
   }
 }

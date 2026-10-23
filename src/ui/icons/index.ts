@@ -25,6 +25,7 @@ export { LockIcon } from 'phosphor-react-native/src/icons/Lock';
 export { LockKeyIcon } from 'phosphor-react-native/src/icons/LockKey';
 export { LockSimpleOpenIcon } from 'phosphor-react-native/src/icons/LockSimpleOpen';
 export { MagnifyingGlassIcon } from 'phosphor-react-native/src/icons/MagnifyingGlass';
+export { MinusIcon } from 'phosphor-react-native/src/icons/Minus';
 export { PackageIcon } from 'phosphor-react-native/src/icons/Package';
 export { PencilSimpleIcon } from 'phosphor-react-native/src/icons/PencilSimple';
 export { PlusIcon } from 'phosphor-react-native/src/icons/Plus';

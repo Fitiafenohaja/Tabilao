@@ -21,6 +21,8 @@ export type Template = {
 };
 
 const PAYMENT = { choices: ['Espèces', 'MVola', 'Orange Money', 'Airtel Money', 'Crédit'] };
+// Unité choisie ligne par ligne : le riz au kapoaka, le savon à la pièce, l'huile au litre.
+const UNIT = { choices: ['pce', 'kg', 'l', 'kapoaka', 'sachet', 'paquet', 'bouteille', 'carton', 'sac'] };
 
 // Les modèles utilisent le même moteur que les tableaux personnalisés et restent modifiables.
 export const TEMPLATES: readonly Template[] = [
@@ -33,6 +35,7 @@ export const TEMPLATES: readonly Template[] = [
       { name: 'Date', type: 'date', required: true, defaultValue: '@today' },
       { name: 'Produit', type: 'text', required: true },
       { name: 'Quantité', type: 'number', required: true, defaultValue: '1', validation: { min: 0 } },
+      { name: 'Unité', type: 'choice', defaultValue: 'pce', options: UNIT },
       { name: 'Prix unitaire', type: 'money', required: true, validation: { min: 0 } },
       { name: 'Montant total', type: 'formula', formula: '{Quantité} * {Prix unitaire}' },
       { name: 'Paiement', type: 'choice', defaultValue: 'Espèces', options: PAYMENT },
@@ -67,6 +70,7 @@ export const TEMPLATES: readonly Template[] = [
       { name: 'Référence', type: 'text' },
       { name: 'Nom', type: 'text', required: true },
       { name: 'Quantité disponible', type: 'number', required: true, defaultValue: '0' },
+      { name: 'Unité', type: 'choice', defaultValue: 'pce', options: UNIT },
       { name: "Seuil d'alerte", type: 'number', defaultValue: '5' },
       { name: 'Prix unitaire', type: 'money', validation: { min: 0 } },
       { name: 'État', type: 'formula', formula: 'SI({Quantité disponible} <= {Seuil d\'alerte}; "Stock bas"; "OK")' },

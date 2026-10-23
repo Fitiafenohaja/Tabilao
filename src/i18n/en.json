@@ -198,7 +198,12 @@
     "archiveTable": "Archive table",
     "unarchiveTable": "Unarchive table",
     "deleteTable": "Delete table",
-    "saved": "Field saved"
+    "saved": "Field saved",
+    "unit": "Unit",
+    "unitNone": "None",
+    "unitHint": "Leave “None” if the unit depends on the product: then add a “Unit” choice field.",
+    "integerOnly": "Whole numbers only",
+    "integerOnlyHint": "For items sold by the piece: 1, 2, 3… no decimals."
   },
   "export": {
     "title": "Export",
@@ -292,5 +297,10 @@
     "disableConfirm": "Tabilao will open without a code. Your current code will be asked.",
     "badgeOn": "On",
     "badgeOff": "Off"
+  },
+  "quantity": {
+    "decrease": "Decrease {{field}}",
+    "increase": "Increase {{field}}",
+    "hint": "E.g. 2, 1.5 or 1/2"
   }
 }

@@ -13,7 +13,9 @@ import { useTable } from '@/features/tables/useTables';
 import { formatDate } from '@/i18n/format';
 import { exportTable } from '@/services/export/share';
 import type { Value } from '@/services/formula';
+import { isUnitField, unitFor } from '@/services/fields';
 import { formatAmount } from '@/services/money';
+import { formatQuantity } from '@/services/quantity';
 import { amountFieldOf, dateFieldOf, isLowStock, titleFieldOf } from '@/services/summary';
 import {
   Badge,
@@ -37,8 +39,14 @@ import {
 
 const PERIODS: Period[] = ['all', 'today', 'week', 'month'];
 
-const display = (field: Field | undefined, value: Value | undefined, t: TFunction): string => {
+const display = (
+  field: Field | undefined,
+  value: Value | undefined,
+  t: TFunction,
+  unit?: string | null,
+): string => {
   if (!field || value === null || value === undefined || value === '') return '—';
+  if (field.type === 'number' && typeof value === 'number') return formatQuantity(value, unit);
   if ((field.type === 'money' || field.type === 'formula') && typeof value === 'number') return formatAmount(Math.round(value));
   if (field.type === 'date' && typeof value === 'string') return formatDate(value);
   if (typeof value === 'boolean') return value ? t('common.yes') : t('common.no');
@@ -63,7 +71,11 @@ export default function TableView() {
   useEffect(resetFilters, [tableId, resetFilters]);
   const filtered = filters.search !== '' || filters.period !== 'all';
   // Champs secondaires affichés sous le titre (hors titre, date et montant).
-  const secondary = fields.filter((f) => f !== roles.title && f !== roles.date && f !== roles.amount).slice(0, 2);
+  const secondary = fields
+    .filter((f) => f !== roles.title && f !== roles.date && f !== roles.amount)
+    // Le champ « Unité » est affiché avec la quantité (« 3 kg »), pas à part.
+    .filter((f) => !isUnitField(f))
+    .slice(0, 2);
 
   // Export du résultat filtré (toutes les lignes, pas seulement la page affichée).
   const runExport = (format: 'xlsx' | 'csv') => {
@@ -92,7 +104,7 @@ export default function TableView() {
           <Text variant="caption" tone="muted" numberOfLines={1}>
             {[
               roles.date ? display(roles.date, item.data[roles.date.id], t) : formatDate(item.createdAt),
-              ...secondary.map((f) => `${f.name} : ${display(f, item.data[f.id], t)}`),
+              ...secondary.map((f) => `${f.name} : ${display(f, item.data[f.id], t, unitFor(f, fields, item.data))}`),
             ].join(' · ')}
           </Text>
           {low ? <Badge label={t('records.lowStock')} /> : null}
